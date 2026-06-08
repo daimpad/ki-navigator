@@ -1,0 +1,11 @@
+{
+  "sessionTitle": "KI-Werkstatt I – Sitzung 1",
+  "sessionDate": "09.06.2026",
+  "welcomeMessage": "Herzlich willkommen zur ersten Sitzung. Heute erarbeiten wir gemeinsam die Grundlagen eures KI-Use-Cases.",
+  "highlightModules": ["m2", "m4"],
+  "fieldHints": {
+    "m2_beschreibung": "Formuliert in 2–3 Sätzen, was die KI konkret tun soll.",
+    "m4_haeufigkeit": "Denkt an euren typischen Arbeitstag — wie oft käme dieser Prozess vor?",
+    "m4_nutzen_aufwand": "Bezieht die Einführungskosten (Schulung, Datenschutz) mit ein."
+  }
+}

@@ -18,11 +18,35 @@
     'm4_rechtliche_bindung', 'm4_nutzen_aufwand'
   ];
 
+  const ONBOARDING_SCREENS = [
+    {
+      icon: '🧭',
+      title: 'Was ist der KI-Use-Case-Navigator?',
+      body: 'Ein Werkzeug zur strukturierten Reflexion deines KI-Vorhabens in der Kommunalverwaltung — von der ersten Idee bis zur begründeten Entscheidung.',
+      hint: null
+    },
+    {
+      icon: '⏱',
+      title: 'Wie lange dauert das?',
+      body: 'Ca. 15–25 Minuten — je nachdem, wie weit dein Use Case schon konkretisiert ist. Alle Felder sind freiwillig. Du kannst jederzeit unterbrechen und weitermachen.',
+      hint: 'Dein Fortschritt wird automatisch im Browser gespeichert.'
+    },
+    {
+      icon: '📄',
+      title: 'Was bekommst du am Ende?',
+      body: 'Einen persönlichen Use-Case-Steckbrief mit Selbstbewertung — zum Herunterladen als Markdown oder PDF. Alle Daten bleiben ausschließlich in deinem Browser.',
+      hint: null
+    }
+  ];
+
   // ── App-State ──────────────────────────────────────────────────────────────
   let state    = {};   // { use_case_typ, ki_eignung, hosting_typ }
   let responses = {};  // { fieldId: value, ... }
   let currentModuleIndex = 0;
   let onExportScreen = false;
+  let onboardingIndex = -1; // >= 0 wenn Onboarding aktiv
+  let pendingResume = null;  // Callback für URL-Import-Resume
+  let sessionConfig = null;  // Facilitator-Session-Konfiguration
 
   // ── Hilfsfunktionen ────────────────────────────────────────────────────────
 
@@ -170,6 +194,15 @@
       case 'scale':       renderScale(wrap, field);       break;
       case 'checklist':   renderChecklist(wrap, field);   break;
       default: return null;
+    }
+
+    // Session-spezifischer Feld-Hint (Facilitator-Modus)
+    const sessionHint = sessionConfig && sessionConfig.fieldHints && sessionConfig.fieldHints[field.id];
+    if (sessionHint) {
+      const hintEl = document.createElement('p');
+      hintEl.className = 'field-hint session-hint';
+      hintEl.textContent = '★ ' + sessionHint;
+      wrap.appendChild(hintEl);
     }
 
     return wrap;
@@ -432,6 +465,52 @@
     return out;
   }
 
+  // ── Onboarding ─────────────────────────────────────────────────────────────
+
+  function renderOnboarding(idx) {
+    onboardingIndex = idx;
+    const screen = ONBOARDING_SCREENS[idx];
+    const container = document.getElementById('module-container');
+    container.innerHTML = '';
+
+    let dotsHtml = '<div class="onboarding-dots">';
+    ONBOARDING_SCREENS.forEach((_, i) => {
+      dotsHtml += `<span class="dot${i === idx ? ' active' : ''}"></span>`;
+    });
+    dotsHtml += '</div>';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'onboarding-screen';
+    wrap.innerHTML =
+      `<div class="onboarding-icon">${screen.icon}</div>` +
+      `<h2 class="onboarding-title">${escapeHtml(screen.title)}</h2>` +
+      `<p class="onboarding-body">${escapeHtml(screen.body)}</p>` +
+      (screen.hint ? `<p class="onboarding-hint">${escapeHtml(screen.hint)}</p>` : '') +
+      dotsHtml;
+    container.appendChild(wrap);
+
+    // Progress-Bar ausblenden
+    document.getElementById('progress-bar').innerHTML = '';
+
+    const btnBack = document.getElementById('btn-back');
+    const btnSkip = document.getElementById('btn-skip');
+    const btnNext = document.getElementById('btn-next');
+    btnBack.disabled = idx === 0;
+    btnSkip.style.display = '';
+    btnNext.style.display = '';
+    btnNext.textContent = idx === ONBOARDING_SCREENS.length - 1 ? 'Los geht\'s →' : 'Weiter →';
+  }
+
+  function finishOnboarding() {
+    onboardingIndex = -1;
+    responses['_onboarding_done'] = true;
+    saveToStorage();
+    startFresh();
+    if (sessionConfig && sessionConfig.welcomeMessage) {
+      setTimeout(() => showToast(sessionConfig.welcomeMessage, 6000), 400);
+    }
+  }
+
   // ── Modul-Rendering ────────────────────────────────────────────────────────
 
   function renderModule(idx) {
@@ -439,11 +518,26 @@
     const container = document.getElementById('module-container');
     container.innerHTML = '';
 
+    // Session-Banner (Facilitator-Modus)
+    if (sessionConfig) {
+      const bannerEl = document.createElement('div');
+      bannerEl.innerHTML = renderSessionBanner();
+      container.appendChild(bannerEl.firstElementChild);
+    }
+
     // Modul-Überschrift
     const hdr = document.createElement('header');
     hdr.className = 'module-header';
     hdr.innerHTML = `<h2 class="module-title">${escapeHtml(mod.title)}</h2>`;
     container.appendChild(hdr);
+
+    // Session-Modul-Hervorhebung
+    if (sessionConfig && sessionConfig.highlightModules && sessionConfig.highlightModules.includes(mod.id)) {
+      const noteEl = document.createElement('div');
+      noteEl.className = 'session-module-note';
+      noteEl.textContent = '★ Dieses Modul ist für die aktuelle Sitzung besonders relevant';
+      container.appendChild(noteEl);
+    }
 
     // Warnhinweise
     const warnings = getCriticalWarnings(mod);
@@ -889,6 +983,7 @@
           <button id="btn-dl-md"  class="btn btn-primary btn-export">↓ Markdown (.md)</button>
           <button id="btn-dl-pdf" class="btn btn-primary btn-export">↓ PDF herunterladen</button>
           <button id="btn-print"  class="btn btn-secondary btn-export">&#x1F5A8; Drucken</button>
+          <button id="btn-share"  class="btn btn-secondary btn-export">&#x1F517; Link teilen</button>
         </div>
       </div>
       <div class="export-preview-box field">
@@ -909,6 +1004,14 @@
     document.getElementById('btn-dl-md').addEventListener('click',  downloadMarkdown);
     document.getElementById('btn-dl-pdf').addEventListener('click', downloadPDF);
     document.getElementById('btn-print').addEventListener('click',  printSteckbrief);
+    document.getElementById('btn-share').addEventListener('click', () => {
+      const url = getShareURL();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => showToast('Link in Zwischenablage kopiert'));
+      } else {
+        prompt('Link kopieren:', url);
+      }
+    });
   }
 
   // ── Druckansicht ───────────────────────────────────────────────────────────
@@ -951,27 +1054,117 @@
     return html;
   }
 
+  // ── Facilitator-Session ────────────────────────────────────────────────────
+
+  async function loadSessionConfig() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionName = params.get('session');
+    if (!sessionName) return;
+    try {
+      const res = await fetch(`sessions/${sessionName}.json`);
+      if (!res.ok) throw new Error('Session nicht gefunden');
+      sessionConfig = await res.json();
+    } catch (e) {
+      console.warn('Session-Konfig konnte nicht geladen werden:', e.message);
+      sessionConfig = null;
+    }
+  }
+
+  function renderSessionBanner() {
+    if (!sessionConfig) return '';
+    return `<div class="session-banner">` +
+      `<span class="session-label">${escapeHtml(sessionConfig.sessionTitle)}</span>` +
+      `<span class="session-date">${escapeHtml(sessionConfig.sessionDate)}</span>` +
+      `</div>`;
+  }
+
+  // ── URL-Hash-Share ─────────────────────────────────────────────────────────
+
+  function getShareURL() {
+    const payload = { v: 1, r: responses, s: state };
+    const json    = JSON.stringify(payload);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+    return window.location.href.split('#')[0] + '#share=' + encoded;
+  }
+
+  function loadFromURLHash() {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#share=')) return false;
+    try {
+      const encoded = hash.slice(7);
+      const json    = decodeURIComponent(escape(atob(encoded)));
+      const payload = JSON.parse(json);
+      if (!payload.r) return false;
+      responses = payload.r;
+      state     = payload.s || {};
+      return true;
+    } catch (e) {
+      console.warn('URL-Share konnte nicht geladen werden:', e);
+      return false;
+    }
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+
+  function showToast(message, duration) {
+    duration = duration || 3000;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), duration);
+  }
+
   // ── Initialisierung ────────────────────────────────────────────────────────
 
-  function init() {
+  async function init() {
+    await loadSessionConfig();
     const meta = NAVIGATOR.meta;
     document.getElementById('app-subtitle').textContent = 'Schritt für Schritt den eigenen KI-Use Case entwickeln';
     document.title = meta.title;
 
     resetState();
 
-    const saved = loadFromStorage();
-    const hasSaved = saved && saved.responses &&
-      Object.keys(saved.responses).filter(k => !k.startsWith('_')).length > 0;
-
-    if (hasSaved) {
-      showResumeDialog(saved.savedAt);
+    // Priorität: URL-Hash > localStorage > neu starten
+    const fromURL = loadFromURLHash();
+    if (fromURL) {
+      history.replaceState(null, '', window.location.pathname);
+      recomputeStateFromResponses();
+      pendingResume = () => renderModule(currentModuleIndex);
+      showResumeDialog(null, 'url');
     } else {
-      startFresh();
+      const saved = loadFromStorage();
+      const hasSaved = saved && saved.responses &&
+        Object.keys(saved.responses).filter(k => !k.startsWith('_')).length > 0;
+
+      if (hasSaved) {
+        showResumeDialog(saved.savedAt, null);
+      } else {
+        const onboardingDone = saved && saved.responses && saved.responses['_onboarding_done'];
+        if (onboardingDone) {
+          startFresh();
+        } else {
+          renderOnboarding(0);
+        }
+      }
     }
 
-    document.getElementById('btn-next').addEventListener('click', goNext);
+    document.getElementById('btn-next').addEventListener('click', () => {
+      if (onboardingIndex >= 0) {
+        if (onboardingIndex < ONBOARDING_SCREENS.length - 1) {
+          renderOnboarding(onboardingIndex + 1);
+        } else {
+          finishOnboarding();
+        }
+        return;
+      }
+      goNext();
+    });
     document.getElementById('btn-back').addEventListener('click', () => {
+      if (onboardingIndex > 0) {
+        renderOnboarding(onboardingIndex - 1);
+        return;
+      }
       if (onExportScreen) {
         onExportScreen = false;
         document.getElementById('btn-next').style.display = '';
@@ -980,10 +1173,22 @@
         navigateTo(currentModuleIndex - 1);
       }
     });
-    document.getElementById('btn-skip').addEventListener('click', goNext);
+    document.getElementById('btn-skip').addEventListener('click', () => {
+      if (onboardingIndex >= 0) {
+        finishOnboarding();
+        return;
+      }
+      goNext();
+    });
 
     document.getElementById('btn-resume-yes').addEventListener('click', () => {
       hideResumeDialog();
+      if (pendingResume) {
+        const fn = pendingResume;
+        pendingResume = null;
+        fn();
+        return;
+      }
       const data = loadFromStorage();
       if (data) {
         responses = data.responses || {};
@@ -1003,14 +1208,18 @@
 
   function startFresh() {
     resetState();
+    const onboardingDone = responses['_onboarding_done'];
     responses = {};
+    if (onboardingDone) responses['_onboarding_done'] = true;
     currentModuleIndex = 0;
     renderModule(0);
   }
 
-  function showResumeDialog(savedAt) {
+  function showResumeDialog(savedAt, source) {
     const info = document.getElementById('dialog-info');
-    if (savedAt) {
+    if (source === 'url') {
+      info.textContent = 'Ein gespeicherter Stand wurde über den Link geladen. Möchtest du dort weitermachen?';
+    } else if (savedAt) {
       const d = new Date(savedAt);
       info.textContent = `Gespeichert: ${d.toLocaleDateString('de-DE')} um ${d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
     } else {
