@@ -111,33 +111,32 @@ const NAVIGATOR = {
         },
 
         {
-          id: "m1_rolle",
-          type: "select",
-          label: "Deine Rolle",
+          id: "m1_zeitrahmen",
+          type: "text",
+          label: "Zeitrahmen",
+          hint: "Ab wann soll das Projekt lanciert werden oder ab wann wird es wichtig, diesen Use Case umzusetzen?",
           required: false,
-          options: [
-            { value: "sachbearbeitung",   label: "Sachbearbeitung" },
-            { value: "fuehrungskraft",    label: "Führungskraft" },
-            { value: "it",               label: "IT / Systemadministration" },
-            { value: "digitalisierung",  label: "Digitalisierung / E-Government" },
-            { value: "projektleitung",   label: "Projektverantwortung" },
-            { value: "sonstiges",        label: "Sonstiges" }
-          ],
-          output: { label: "Rolle", section: "meta" }
+          output: { label: "Zeitrahmen", section: "meta" }
         },
 
         {
-          id: "m1_ki_erfahrung",
-          type: "select",
-          label: "Wie viel Erfahrung hast du bisher mit KI-Anwendungen?",
+          id: "m1_bekannte_tools",
+          type: "textarea",
+          label: "Bekannte Applikationen",
+          hint: "Gibt es bereits Anwendungen oder Tools, die diesen Bedarf abdecken könnten?",
+          rows: 3,
           required: false,
-          options: [
-            { value: "keine",                  label: "Keine — ich bin neu in diesem Bereich" },
-            { value: "privat",                 label: "Gelegentlich privat (z. B. ChatGPT, Sprachassistenten)" },
-            { value: "beruflich_gelegentlich", label: "Beruflich — ich probiere es vereinzelt aus" },
-            { value: "beruflich_aktiv",        label: "Beruflich aktiv — ich setze KI bereits regelmäßig ein" }
-          ],
-          output: { label: "KI-Vorerfahrung", section: "meta" }
+          output: { label: "Bekannte Applikationen", section: "meta" }
+        },
+
+        {
+          id: "m1_referenzbeispiele",
+          type: "textarea",
+          label: "Referenzbeispiele",
+          hint: "Gibt es Referenzbeispiele aus anderen Kommunen oder Organisationen, die etwas Ähnliches umgesetzt haben?",
+          rows: 3,
+          required: false,
+          output: { label: "Referenzbeispiele", section: "meta" }
         },
 
         {
@@ -1670,7 +1669,7 @@ NAVIGATOR.exportConfig = {
       title: "Angaben zur Person",
       icon: "person",
       includeInPdf: true,
-      fields: ["m1_name","m1_organisation","m1_fachbereich","m1_rolle","m1_ki_erfahrung","m1_use_case_status"]
+      fields: ["m1_name","m1_organisation","m1_fachbereich","m1_zeitrahmen","m1_bekannte_tools","m1_referenzbeispiele","m1_use_case_status"]
     },
     {
       id: "use_case",
