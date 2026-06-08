@@ -459,8 +459,19 @@
       if (el) container.appendChild(el);
     });
 
+    applyLabelOverrides(container);
     updateProgressBar(idx);
     updateNavButtons(mod, idx);
+  }
+
+  function applyLabelOverrides(container) {
+    container.querySelectorAll('.field-label').forEach(el => {
+      if (el.textContent.trim() === 'Dein Name') el.textContent = 'Name deines Use Cases';
+    });
+    container.querySelectorAll('.field-hint').forEach(el => {
+      const parent = el.closest('[data-id="m1_organisation"]');
+      if (parent) el.textContent = '';
+    });
   }
 
   function refreshModuleView() {

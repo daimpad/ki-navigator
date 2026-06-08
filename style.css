@@ -111,11 +111,10 @@ mark.g {
 }
 
 .app-subtitle {
-  font-family: var(--nz-font-mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 254, 229, 0.50);
+  font-family: var(--nz-font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
   margin-top: 3px;
 }
 
@@ -193,8 +192,8 @@ mark.g {
 
 /* ── Felder (Basis) ─────────────────────────────────────────────────────── */
 .field {
-  background: var(--nz-paper);
-  border: var(--nz-stroke-rule) solid var(--nz-ink);
+  background: #ffffff;
+  border: none;
   border-radius: var(--nz-radius);
   padding: 16px;
 }
@@ -318,21 +317,21 @@ mark.g {
 .field-type-text input,
 .field-type-textarea textarea {
   width: 100%;
-  border: var(--nz-stroke-rule) solid var(--nz-ink);
+  border: var(--nz-stroke-hair) solid var(--nz-ink-20);
   border-radius: var(--nz-radius);
   padding: 10px 14px;
   font-family: var(--nz-font-body);
   font-size: 16px;
   color: var(--nz-ink);
-  background: var(--nz-paper-alt);
+  background: #ffffff;
   transition: box-shadow var(--nz-dur) var(--nz-ease),
-              background var(--nz-dur) var(--nz-ease);
+              border-color var(--nz-dur) var(--nz-ease);
   resize: vertical;
 }
 .field-type-text input:focus,
 .field-type-textarea textarea:focus {
   outline: none;
-  background: var(--nz-paper);
+  border-color: var(--nz-ink);
   box-shadow: var(--nz-shadow-sm);
 }
 
@@ -349,10 +348,10 @@ mark.g {
   align-items: flex-start;
   gap: 10px;
   padding: 10px 14px;
-  border: var(--nz-stroke-rule) solid var(--nz-ink-20);
+  border: var(--nz-stroke-hair) solid var(--nz-ink-20);
   border-radius: var(--nz-radius);
   cursor: pointer;
-  background: var(--nz-paper-alt);
+  background: #ffffff;
   transition: border-color var(--nz-dur) var(--nz-ease),
               background  var(--nz-dur) var(--nz-ease),
               box-shadow  var(--nz-dur) var(--nz-ease);
@@ -360,7 +359,7 @@ mark.g {
 }
 .option-label:hover {
   border-color: var(--nz-ink);
-  background: var(--nz-paper-deep);
+  background: var(--nz-green-soft);
   box-shadow: var(--nz-shadow-sm);
 }
 .option-label:has(input:checked) {
@@ -450,7 +449,7 @@ mark.g {
   align-items: center;
   gap: 10px;
   padding: 8px 14px;
-  background: var(--nz-paper-alt);
+  background: #ffffff;
   border: var(--nz-stroke-hair) solid var(--nz-ink-20);
   border-radius: var(--nz-radius);
 }
@@ -672,6 +671,41 @@ mark.g {
   max-height: 520px;
   overflow-y: auto;
 }
+
+/* ── Site-Footer ─────────────────────────────────────────────────────────── */
+.site-footer {
+  max-width: var(--nz-container);
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-top: var(--nz-stroke-hair) solid var(--nz-ink-20);
+}
+.site-footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.site-footer a {
+  font-family: var(--nz-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--nz-ink-50);
+  text-decoration: none;
+  transition: color var(--nz-dur);
+}
+.site-footer a:hover { color: var(--nz-ink); }
+.site-footer-brand {
+  font-family: var(--nz-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--nz-ink-50);
+  text-decoration: none;
+}
+.site-footer-brand:hover { color: var(--nz-ink); }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 479px) {
