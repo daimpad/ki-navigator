@@ -46,6 +46,7 @@
   let onExportScreen = false;
   let onboardingIndex = -1; // >= 0 wenn Onboarding aktiv
   let pendingResume = null;  // Callback für URL-Import-Resume
+  let sessionConfig = null;  // Facilitator-Session-Konfiguration
 
   // ── Hilfsfunktionen ────────────────────────────────────────────────────────
 
@@ -193,6 +194,15 @@
       case 'scale':       renderScale(wrap, field);       break;
       case 'checklist':   renderChecklist(wrap, field);   break;
       default: return null;
+    }
+
+    // Session-spezifischer Feld-Hint (Facilitator-Modus)
+    const sessionHint = sessionConfig && sessionConfig.fieldHints && sessionConfig.fieldHints[field.id];
+    if (sessionHint) {
+      const hintEl = document.createElement('p');
+      hintEl.className = 'field-hint session-hint';
+      hintEl.textContent = '★ ' + sessionHint;
+      wrap.appendChild(hintEl);
     }
 
     return wrap;
@@ -496,6 +506,9 @@
     responses['_onboarding_done'] = true;
     saveToStorage();
     startFresh();
+    if (sessionConfig && sessionConfig.welcomeMessage) {
+      setTimeout(() => showToast(sessionConfig.welcomeMessage, 6000), 400);
+    }
   }
 
   // ── Modul-Rendering ────────────────────────────────────────────────────────
@@ -505,11 +518,26 @@
     const container = document.getElementById('module-container');
     container.innerHTML = '';
 
+    // Session-Banner (Facilitator-Modus)
+    if (sessionConfig) {
+      const bannerEl = document.createElement('div');
+      bannerEl.innerHTML = renderSessionBanner();
+      container.appendChild(bannerEl.firstElementChild);
+    }
+
     // Modul-Überschrift
     const hdr = document.createElement('header');
     hdr.className = 'module-header';
     hdr.innerHTML = `<h2 class="module-title">${escapeHtml(mod.title)}</h2>`;
     container.appendChild(hdr);
+
+    // Session-Modul-Hervorhebung
+    if (sessionConfig && sessionConfig.highlightModules && sessionConfig.highlightModules.includes(mod.id)) {
+      const noteEl = document.createElement('div');
+      noteEl.className = 'session-module-note';
+      noteEl.textContent = '★ Dieses Modul ist für die aktuelle Sitzung besonders relevant';
+      container.appendChild(noteEl);
+    }
 
     // Warnhinweise
     const warnings = getCriticalWarnings(mod);
@@ -1026,6 +1054,30 @@
     return html;
   }
 
+  // ── Facilitator-Session ────────────────────────────────────────────────────
+
+  async function loadSessionConfig() {
+    const params = new URLSearchParams(window.location.search);
+    const sessionName = params.get('session');
+    if (!sessionName) return;
+    try {
+      const res = await fetch(`sessions/${sessionName}.json`);
+      if (!res.ok) throw new Error('Session nicht gefunden');
+      sessionConfig = await res.json();
+    } catch (e) {
+      console.warn('Session-Konfig konnte nicht geladen werden:', e.message);
+      sessionConfig = null;
+    }
+  }
+
+  function renderSessionBanner() {
+    if (!sessionConfig) return '';
+    return `<div class="session-banner">` +
+      `<span class="session-label">${escapeHtml(sessionConfig.sessionTitle)}</span>` +
+      `<span class="session-date">${escapeHtml(sessionConfig.sessionDate)}</span>` +
+      `</div>`;
+  }
+
   // ── URL-Hash-Share ─────────────────────────────────────────────────────────
 
   function getShareURL() {
@@ -1065,7 +1117,8 @@
 
   // ── Initialisierung ────────────────────────────────────────────────────────
 
-  function init() {
+  async function init() {
+    await loadSessionConfig();
     const meta = NAVIGATOR.meta;
     document.getElementById('app-subtitle').textContent = 'Schritt für Schritt den eigenen KI-Use Case entwickeln';
     document.title = meta.title;
