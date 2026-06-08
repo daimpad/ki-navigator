@@ -613,6 +613,7 @@ mark.g {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   padding: 10px 20px;
   border-radius: var(--nz-radius);
   font-family: var(--nz-font-body);
@@ -722,6 +723,11 @@ mark.g {
 }
 .export-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
 .btn-export { flex: 1; min-width: 180px; }
+
+.export-preview-box {
+  border: 2px solid var(--nz-ink);
+  box-shadow: var(--nz-shadow-sm);
+}
 
 .export-preview-title {
   font-family: var(--nz-font-mono);

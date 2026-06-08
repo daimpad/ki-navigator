@@ -641,7 +641,7 @@
     const isLast = idx === NAVIGATOR.modules.length - 1;
     document.getElementById('btn-back').disabled = idx === 0;
     document.getElementById('btn-skip').style.display = mod.skippable ? '' : 'none';
-    document.getElementById('btn-next').textContent = isLast ? 'Steckbrief erstellen' : 'Weiter →';
+    document.getElementById('btn-next').innerHTML = isLast ? 'Steckbrief erstellen' : 'Weiter <i class="fa-solid fa-arrow-right"></i>';
   }
 
   function navigateTo(idx) {
@@ -980,10 +980,8 @@
       <div class="export-action-box field">
         <p class="export-intro">Dein Use-Case-Steckbrief ist bereit zum Herunterladen.</p>
         <div class="export-buttons">
-          <button id="btn-dl-md"  class="btn btn-primary btn-export">↓ Markdown (.md)</button>
-          <button id="btn-dl-pdf" class="btn btn-primary btn-export">↓ PDF herunterladen</button>
-          <button id="btn-print"  class="btn btn-secondary btn-export">&#x1F5A8; Drucken</button>
-          <button id="btn-share"  class="btn btn-secondary btn-export">&#x1F517; Link teilen</button>
+          <button id="btn-dl-md"  class="btn btn-primary btn-export"><i class="fa-solid fa-download"></i> Markdown</button>
+          <button id="btn-dl-pdf" class="btn btn-primary btn-export"><i class="fa-solid fa-file-pdf"></i> PDF</button>
         </div>
       </div>
       <div class="export-preview-box field">
