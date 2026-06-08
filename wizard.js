@@ -961,7 +961,8 @@
     resetState();
 
     const saved = loadFromStorage();
-    const hasSaved = saved && saved.responses && Object.keys(saved.responses).length > 0;
+    const hasSaved = saved && saved.responses &&
+      Object.keys(saved.responses).filter(k => !k.startsWith('_')).length > 0;
 
     if (hasSaved) {
       showResumeDialog(saved.savedAt);
