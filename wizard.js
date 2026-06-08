@@ -179,7 +179,8 @@
       const score   = state.ki_eignung;
       const content = score && field.contentByScore[score];
       if (content) {
-        wrap.innerHTML = `<div class="info-block info-result info-result-${score}"><p>${content}</p></div>`;
+        wrap.classList.add('info-result', `info-result-${score}`);
+        wrap.innerHTML = `<div class="info-block"><p>${content}</p></div>`;
       } else {
         wrap.style.display = 'none';
       }
@@ -517,7 +518,6 @@
 
   function init() {
     const meta = NAVIGATOR.meta;
-    document.getElementById('app-title').textContent    = meta.title;
     document.getElementById('app-subtitle').textContent = meta.subtitle;
     document.title = meta.title;
 

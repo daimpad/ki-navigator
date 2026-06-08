@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KI-Use-Case-Navigator</title>
+  <title>KI-Use-Case-Navigator — nozilla</title>
+
+  <!-- nozilla Fonts: Zilla Slab · Inter · Space Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@700&family=Inter:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,12 +17,12 @@
   <div class="top-bar">
     <header class="app-header">
       <div class="header-inner">
-        <h1 id="app-title">KI-Use-Case-Navigator</h1>
+        <h1 class="app-title">KI-Use-Case-<mark class="g">Navigator</mark></h1>
         <p id="app-subtitle" class="app-subtitle"></p>
       </div>
     </header>
     <div class="progress-wrapper">
-      <nav id="progress-bar" class="progress-bar" aria-label="Fortschritt durch den Navigator"></nav>
+      <nav id="progress-bar" class="progress-bar" aria-label="Fortschritt"></nav>
     </div>
   </div>
 
@@ -33,7 +39,7 @@
   <div id="resume-dialog" class="dialog-overlay hidden"
        role="dialog" aria-modal="true" aria-labelledby="dialog-title">
     <div class="dialog-box">
-      <h2 id="dialog-title">Gespeicherten Fortschritt fortsetzen?</h2>
+      <h2 id="dialog-title">Fortschritt fortsetzen?</h2>
       <p id="dialog-info">Es wurden gespeicherte Eingaben gefunden.</p>
       <div class="dialog-actions">
         <button id="btn-resume-yes" type="button" class="btn btn-primary">Fortsetzen</button>
