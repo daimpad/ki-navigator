@@ -768,6 +768,22 @@ mark.g {
 /* ── Print-View (screen: versteckt) ─────────────────────────────────────── */
 #print-view { display: none; }
 
+/* ── Toast ───────────────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--nz-ink);
+  color: var(--nz-green);
+  font-family: var(--nz-font-mono), monospace;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.2rem;
+  z-index: 9999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
 /* ── Druckansicht ────────────────────────────────────────────────────────── */
 @media print {
   body > *:not(#print-view) { display: none !important; }

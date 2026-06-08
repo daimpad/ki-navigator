@@ -45,6 +45,7 @@
   let currentModuleIndex = 0;
   let onExportScreen = false;
   let onboardingIndex = -1; // >= 0 wenn Onboarding aktiv
+  let pendingResume = null;  // Callback für URL-Import-Resume
 
   // ── Hilfsfunktionen ────────────────────────────────────────────────────────
 
@@ -954,6 +955,7 @@
           <button id="btn-dl-md"  class="btn btn-primary btn-export">↓ Markdown (.md)</button>
           <button id="btn-dl-pdf" class="btn btn-primary btn-export">↓ PDF herunterladen</button>
           <button id="btn-print"  class="btn btn-secondary btn-export">&#x1F5A8; Drucken</button>
+          <button id="btn-share"  class="btn btn-secondary btn-export">&#x1F517; Link teilen</button>
         </div>
       </div>
       <div class="export-preview-box field">
@@ -974,6 +976,14 @@
     document.getElementById('btn-dl-md').addEventListener('click',  downloadMarkdown);
     document.getElementById('btn-dl-pdf').addEventListener('click', downloadPDF);
     document.getElementById('btn-print').addEventListener('click',  printSteckbrief);
+    document.getElementById('btn-share').addEventListener('click', () => {
+      const url = getShareURL();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => showToast('Link in Zwischenablage kopiert'));
+      } else {
+        prompt('Link kopieren:', url);
+      }
+    });
   }
 
   // ── Druckansicht ───────────────────────────────────────────────────────────
@@ -1016,6 +1026,43 @@
     return html;
   }
 
+  // ── URL-Hash-Share ─────────────────────────────────────────────────────────
+
+  function getShareURL() {
+    const payload = { v: 1, r: responses, s: state };
+    const json    = JSON.stringify(payload);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+    return window.location.href.split('#')[0] + '#share=' + encoded;
+  }
+
+  function loadFromURLHash() {
+    const hash = window.location.hash;
+    if (!hash.startsWith('#share=')) return false;
+    try {
+      const encoded = hash.slice(7);
+      const json    = decodeURIComponent(escape(atob(encoded)));
+      const payload = JSON.parse(json);
+      if (!payload.r) return false;
+      responses = payload.r;
+      state     = payload.s || {};
+      return true;
+    } catch (e) {
+      console.warn('URL-Share konnte nicht geladen werden:', e);
+      return false;
+    }
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+
+  function showToast(message, duration) {
+    duration = duration || 3000;
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), duration);
+  }
+
   // ── Initialisierung ────────────────────────────────────────────────────────
 
   function init() {
@@ -1025,18 +1072,27 @@
 
     resetState();
 
-    const saved = loadFromStorage();
-    const hasSaved = saved && saved.responses &&
-      Object.keys(saved.responses).filter(k => !k.startsWith('_')).length > 0;
-
-    if (hasSaved) {
-      showResumeDialog(saved.savedAt);
+    // Priorität: URL-Hash > localStorage > neu starten
+    const fromURL = loadFromURLHash();
+    if (fromURL) {
+      history.replaceState(null, '', window.location.pathname);
+      recomputeStateFromResponses();
+      pendingResume = () => renderModule(currentModuleIndex);
+      showResumeDialog(null, 'url');
     } else {
-      const onboardingDone = saved && saved.responses && saved.responses['_onboarding_done'];
-      if (onboardingDone) {
-        startFresh();
+      const saved = loadFromStorage();
+      const hasSaved = saved && saved.responses &&
+        Object.keys(saved.responses).filter(k => !k.startsWith('_')).length > 0;
+
+      if (hasSaved) {
+        showResumeDialog(saved.savedAt, null);
       } else {
-        renderOnboarding(0);
+        const onboardingDone = saved && saved.responses && saved.responses['_onboarding_done'];
+        if (onboardingDone) {
+          startFresh();
+        } else {
+          renderOnboarding(0);
+        }
       }
     }
 
@@ -1074,6 +1130,12 @@
 
     document.getElementById('btn-resume-yes').addEventListener('click', () => {
       hideResumeDialog();
+      if (pendingResume) {
+        const fn = pendingResume;
+        pendingResume = null;
+        fn();
+        return;
+      }
       const data = loadFromStorage();
       if (data) {
         responses = data.responses || {};
@@ -1100,9 +1162,11 @@
     renderModule(0);
   }
 
-  function showResumeDialog(savedAt) {
+  function showResumeDialog(savedAt, source) {
     const info = document.getElementById('dialog-info');
-    if (savedAt) {
+    if (source === 'url') {
+      info.textContent = 'Ein gespeicherter Stand wurde über den Link geladen. Möchtest du dort weitermachen?';
+    } else if (savedAt) {
       const d = new Date(savedAt);
       info.textContent = `Gespeichert: ${d.toLocaleDateString('de-DE')} um ${d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr`;
     } else {
