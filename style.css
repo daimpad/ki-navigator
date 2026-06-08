@@ -63,7 +63,7 @@ body {
   font-size: 17px;
   line-height: 1.55;
   color: var(--nz-ink);
-  background: var(--nz-paper);
+  background: #ffffff;
   min-height: 100vh;
   padding-bottom: calc(var(--nav-h) + 28px);
 }
@@ -82,7 +82,6 @@ mark.g {
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: var(--nz-stroke-rule) solid var(--nz-ink);
 }
 
 /* ── App-Header ─────────────────────────────────────────────────────────── */
@@ -122,8 +121,7 @@ mark.g {
 
 /* ── Fortschrittsbalken ─────────────────────────────────────────────────── */
 .progress-wrapper {
-  background: var(--nz-paper-alt);
-  border-bottom: var(--nz-stroke-hair) solid var(--nz-ink-20);
+  background: #ffffff;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -142,7 +140,6 @@ mark.g {
 .progress-step {
   background: none;
   border: none;
-  border-right: var(--nz-stroke-hair) solid var(--nz-ink-20);
   font-family: var(--nz-font-mono);
   font-size: 9px;
   font-weight: 700;
@@ -155,7 +152,6 @@ mark.g {
   transition: background var(--nz-dur) var(--nz-ease),
               color var(--nz-dur) var(--nz-ease);
 }
-.progress-step:last-child { border-right: none; }
 
 .progress-step.visited { color: var(--nz-ink-70); }
 
@@ -166,7 +162,7 @@ mark.g {
 }
 
 .progress-step:hover:not(.active) {
-  background: var(--nz-paper-deep);
+  background: var(--nz-green);
   color: var(--nz-ink);
 }
 
@@ -205,8 +201,9 @@ mark.g {
 
 /* ── Info-Block ─────────────────────────────────────────────────────────── */
 .field-type-info {
-  background: var(--nz-paper-deep);
+  background: transparent;
   border: var(--nz-stroke-hair) solid var(--nz-ink-20);
+  border-radius: 8px;
   padding: 14px 16px;
 }
 
@@ -523,7 +520,7 @@ mark.g {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--nz-paper);
+  background: #ffffff;
   border-top: var(--nz-stroke-rule) solid var(--nz-ink);
   z-index: 100;
   padding: 10px 20px;
