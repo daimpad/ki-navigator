@@ -855,7 +855,7 @@
 
   function init() {
     const meta = NAVIGATOR.meta;
-    document.getElementById('app-subtitle').textContent = meta.subtitle;
+    document.getElementById('app-subtitle').textContent = 'Schritt für Schritt den eigenen KI-Use Case entwickeln';
     document.title = meta.title;
 
     resetState();
