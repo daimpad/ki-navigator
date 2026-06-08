@@ -570,3 +570,52 @@ body {
   .nav-footer { padding: var(--sp-md) var(--sp-xl); }
   .progress-bar { padding: var(--sp-xs) var(--sp-xl); }
 }
+
+/* ── Export-Screen ───────────────────────────────────────────────────────── */
+.export-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-lg);
+}
+
+.export-action-box .export-intro {
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-md);
+}
+
+.export-buttons {
+  display: flex;
+  gap: var(--sp-sm);
+  flex-wrap: wrap;
+}
+
+.btn-export {
+  flex: 1;
+  min-width: 180px;
+  font-size: var(--fs-base);
+}
+
+.export-preview-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--c-text-muted);
+  margin-bottom: var(--sp-sm);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: .75rem;
+}
+
+.export-preview {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: .8rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--c-text);
+  background: var(--c-bg);
+  padding: var(--sp-md);
+  border-radius: var(--radius);
+  max-height: 520px;
+  overflow-y: auto;
+  border: 1px solid var(--c-border);
+}

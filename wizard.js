@@ -2,9 +2,9 @@
 
 // ────────────────────────────────────────────────────────────────────────────
 //  wizard.js — KI-Use-Case-Navigator
-//  Anwendungslogik: Modul-Rendering, Branching, Persistenz, Navigation.
+//  Anwendungslogik: Modul-Rendering, Branching, Persistenz, Navigation,
+//  Markdown-Export, PDF-Export (jsPDF).
 //  Alle Inhalte kommen aus content.js (NAVIGATOR).
-//  Export: Phase 2.
 // ────────────────────────────────────────────────────────────────────────────
 
 (function () {
@@ -22,6 +22,7 @@
   let state    = {};   // { use_case_typ, ki_eignung, hosting_typ }
   let responses = {};  // { fieldId: value, ... }
   let currentModuleIndex = 0;
+  let onExportScreen = false;
 
   // ── Hilfsfunktionen ────────────────────────────────────────────────────────
 
@@ -504,13 +505,349 @@
     if (currentModuleIndex < NAVIGATOR.modules.length - 1) {
       navigateTo(currentModuleIndex + 1);
     } else {
-      showExportPlaceholder();
+      showExportScreen();
     }
   }
 
-  function showExportPlaceholder() {
-    // Platzhalter — Export wird in Phase 2 implementiert
-    alert('Export wird in Phase 2 implementiert.');
+  // ── Export: Hilfsfunktionen ────────────────────────────────────────────────
+
+  function getFieldDef(fieldId) {
+    for (const mod of NAVIGATOR.modules) {
+      for (const f of mod.fields) {
+        if (f.id === fieldId) return f;
+      }
+    }
+    return null;
+  }
+
+  function getDisplayValue(field, response) {
+    if (response === undefined || response === null || response === '') return null;
+
+    switch (field.type) {
+      case 'text':
+      case 'textarea':
+        return String(response).trim() || null;
+
+      case 'select': {
+        const opt = (field.options || []).find(o => o.value === response);
+        return opt ? opt.label.replace('[kritisch]', '').trim() : String(response);
+      }
+
+      case 'multiselect': {
+        if (!Array.isArray(response) || response.length === 0) return null;
+        return response.map(v => {
+          const opt = (field.options || []).find(o => o.value === v);
+          return opt ? opt.label.replace('[kritisch]', '').trim() : v;
+        }).join(', ');
+      }
+
+      case 'scale':
+        return String(response);
+
+      case 'checklist': {
+        const overrides = (typeof response === 'object' && response) ? response : {};
+        return (field.items || []).map(item => {
+          const status = overrides[item.id] || computeChecklistStatus(item);
+          const icon = status === 'green' ? '✅' : status === 'yellow' ? '⚠️' : '❌';
+          return `${icon} ${item.label}`;
+        }).join('\n');
+      }
+
+      default:
+        return null;
+    }
+  }
+
+  function getExportSections() {
+    const cfg = NAVIGATOR.exportConfig;
+    const isNein = state.ki_eignung === 'nein';
+    const allowedIds = isNein
+      ? new Set(cfg.alternativeExport_ki_nein.sections)
+      : null;
+
+    return cfg.sections.filter(s => {
+      if (allowedIds && !allowedIds.has(s.id)) return false;
+      if (s.skipWhen) {
+        const sw = s.skipWhen;
+        if (sw.stateKey && sw.value && state[sw.stateKey] === sw.value) return false;
+      }
+      return true;
+    });
+  }
+
+  function getSectionTitle(section) {
+    if (state.ki_eignung === 'nein' && section.alternativeTitle_ki_nein) {
+      return section.alternativeTitle_ki_nein;
+    }
+    return section.title;
+  }
+
+  function getDocTitle() {
+    const cfg = NAVIGATOR.exportConfig;
+    return state.ki_eignung === 'nein'
+      ? cfg.alternativeExport_ki_nein.title
+      : cfg.document.title;
+  }
+
+  // ── Markdown-Export ────────────────────────────────────────────────────────
+
+  function generateMarkdown() {
+    const cfg = NAVIGATOR.exportConfig;
+    const sections = getExportSections();
+    const dateStr = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const sep = cfg.markdown.sectionSeparator;
+
+    let md = `# ${getDocTitle()}\n\n`;
+    md += `*${cfg.document.subtitle}*  \n`;
+    md += `*Erstellt am: ${dateStr}*\n\n`;
+    md += `${sep}\n\n`;
+
+    sections.forEach(section => {
+      md += `## ${getSectionTitle(section)}\n\n`;
+      let hasContent = false;
+
+      section.fields.forEach(fieldId => {
+        const field = getFieldDef(fieldId);
+        if (!field || !field.output) return;
+        const val = getDisplayValue(field, responses[fieldId]);
+        if (!val) return;
+
+        hasContent = true;
+        if (val.includes('\n')) {
+          md += `**${field.output.label}:**\n\n`;
+          val.split('\n').forEach(line => { md += `- ${line}\n`; });
+          md += '\n';
+        } else {
+          md += `**${field.output.label}:** ${val}\n\n`;
+        }
+      });
+
+      if (!hasContent) md += `*(keine Angaben)*\n\n`;
+      md += `${sep}\n\n`;
+    });
+
+    md += `*${cfg.document.footerNote}*\n`;
+    return md;
+  }
+
+  function downloadMarkdown() {
+    const md = generateMarkdown();
+    const blob = new Blob(['﻿' + md], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${NAVIGATOR.meta.exportFilename}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  // ── PDF-Export ─────────────────────────────────────────────────────────────
+
+  function generatePDF() {
+    const { jsPDF } = window.jspdf;
+    const cfg = NAVIGATOR.exportConfig;
+    const m = cfg.pdf.margins;
+    const sections = getExportSections();
+    const sourceNotesInFooter = cfg.pdf.sourceNotesInFooter;
+
+    const doc = new jsPDF({ format: 'a4', unit: 'mm' });
+    const pw  = doc.internal.pageSize.getWidth();
+    const ph  = doc.internal.pageSize.getHeight();
+    const cw  = pw - m.left - m.right;
+    const LH  = 5.5;
+    const FOOT_ZONE = 14;
+
+    let y = m.top;
+    const footnotes = [];
+
+    function newPage() {
+      doc.addPage();
+      y = m.top;
+    }
+
+    function checkY(needed) {
+      if (y + needed > ph - m.bottom - FOOT_ZONE) newPage();
+    }
+
+    function pdfText(text, x, yPos, opts) {
+      doc.text(text, x, yPos, opts || {});
+    }
+
+    // ── Titelseite ─────────────────────────────────────────────────────────
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(15, 76, 129);
+    const titleLines = doc.splitTextToSize(getDocTitle(), cw);
+    pdfText(titleLines, m.left, y);
+    y += titleLines.length * LH * 1.8;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(80, 80, 80);
+    pdfText(cfg.document.subtitle, m.left, y);
+    y += LH * 1.3;
+    pdfText(`Erstellt am: ${new Date().toLocaleDateString('de-DE')}`, m.left, y);
+    y += LH * 2.5;
+    doc.setTextColor(0);
+
+    // ── Sektionen ─────────────────────────────────────────────────────────
+    sections.forEach((section, sIdx) => {
+      if (sIdx > 0) newPage();
+
+      // Abschnittsüberschrift
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(15, 76, 129);
+      const stLines = doc.splitTextToSize(getSectionTitle(section), cw);
+      pdfText(stLines, m.left, y);
+      y += stLines.length * LH * 1.4;
+
+      // Trennlinie
+      doc.setDrawColor(15, 76, 129);
+      doc.setLineWidth(0.4);
+      doc.line(m.left, y, pw - m.right, y);
+      y += LH * 0.9;
+      doc.setDrawColor(0);
+      doc.setTextColor(0);
+
+      // Felder
+      section.fields.forEach(fieldId => {
+        const field = getFieldDef(fieldId);
+        if (!field || !field.output) return;
+        const val = getDisplayValue(field, responses[fieldId]);
+        if (!val) return;
+
+        // Quellenangabe sammeln
+        let noteTag = '';
+        if (sourceNotesInFooter && field.source) {
+          footnotes.push(`[${footnotes.length + 1}] ${field.source.label}: ${field.source.text}`);
+          noteTag = ` [${footnotes.length}]`;
+        }
+
+        // Label
+        checkY(LH * 3);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        const lblLines = doc.splitTextToSize(`${field.output.label}${noteTag}:`, cw);
+        pdfText(lblLines, m.left, y);
+        y += lblLines.length * LH * 0.9;
+
+        // Wert
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+
+        if (field.type === 'checklist') {
+          val.split('\n').forEach(line => {
+            const pdfLine = line.replace('✅', '[OK] ').replace('⚠️', '[!]  ').replace('❌', '[  ] ');
+            const lLines = doc.splitTextToSize(pdfLine, cw - 3);
+            checkY(lLines.length * LH * 0.9);
+            pdfText(lLines, m.left + 3, y);
+            y += lLines.length * LH * 0.9;
+          });
+        } else {
+          const valLines = doc.splitTextToSize(val, cw);
+          valLines.forEach(line => {
+            checkY(LH * 0.9);
+            pdfText(line, m.left, y);
+            y += LH * 0.9;
+          });
+        }
+
+        y += LH * 0.5;
+      });
+    });
+
+    // ── Quellenangaben-Seite ───────────────────────────────────────────────
+    if (footnotes.length > 0) {
+      newPage();
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(15, 76, 129);
+      pdfText('Quellenangaben', m.left, y);
+      y += LH * 1.8;
+      doc.setTextColor(0);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      footnotes.forEach(note => {
+        const nLines = doc.splitTextToSize(note, cw);
+        checkY(nLines.length * LH * 0.85 + 2);
+        pdfText(nLines, m.left, y);
+        y += nLines.length * LH * 0.85 + 2;
+      });
+    }
+
+    // ── Footer auf jeder Seite ─────────────────────────────────────────────
+    const total = doc.getNumberOfPages();
+    for (let p = 1; p <= total; p++) {
+      doc.setPage(p);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(140);
+      const footLines = doc.splitTextToSize(cfg.document.footerNote, cw - 18);
+      pdfText(footLines, m.left, ph - m.bottom + 5);
+      pdfText(`${p} / ${total}`, pw - m.right, ph - m.bottom + 5, { align: 'right' });
+      doc.setTextColor(0);
+    }
+
+    return doc;
+  }
+
+  function downloadPDF() {
+    if (!window.jspdf) {
+      alert('PDF-Bibliothek nicht verfügbar. Bitte Internetverbindung prüfen.');
+      return;
+    }
+    try {
+      const doc = generatePDF();
+      doc.save(`${NAVIGATOR.meta.exportFilename}.pdf`);
+    } catch (err) {
+      console.error('PDF-Fehler:', err);
+      alert('Beim Erstellen des PDFs ist ein Fehler aufgetreten.');
+    }
+  }
+
+  // ── Export-Screen ──────────────────────────────────────────────────────────
+
+  function showExportScreen() {
+    onExportScreen = true;
+    const container = document.getElementById('module-container');
+    container.innerHTML = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    const md = generateMarkdown();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'export-screen';
+    wrap.innerHTML = `
+      <header class="module-header">
+        <h2 class="module-title">Steckbrief erstellen</h2>
+      </header>
+      <div class="export-action-box field">
+        <p class="export-intro">Dein Use-Case-Steckbrief ist bereit zum Herunterladen.</p>
+        <div class="export-buttons">
+          <button id="btn-dl-md"  class="btn btn-primary btn-export">↓ Markdown (.md)</button>
+          <button id="btn-dl-pdf" class="btn btn-primary btn-export">↓ PDF herunterladen</button>
+        </div>
+      </div>
+      <div class="export-preview-box field">
+        <h3 class="export-preview-title">Vorschau</h3>
+        <pre class="export-preview">${escapeHtml(md)}</pre>
+      </div>
+    `;
+    container.appendChild(wrap);
+
+    // Nur "Zurück" anzeigen
+    document.getElementById('btn-back').disabled = false;
+    document.getElementById('btn-skip').style.display = 'none';
+    const btnNext = document.getElementById('btn-next');
+    btnNext.style.display = 'none';
+
+    updateProgressBar(NAVIGATOR.modules.length - 1);
+
+    document.getElementById('btn-dl-md').addEventListener('click',  downloadMarkdown);
+    document.getElementById('btn-dl-pdf').addEventListener('click', downloadPDF);
   }
 
   // ── Initialisierung ────────────────────────────────────────────────────────
@@ -534,7 +871,13 @@
 
     document.getElementById('btn-next').addEventListener('click', goNext);
     document.getElementById('btn-back').addEventListener('click', () => {
-      if (currentModuleIndex > 0) navigateTo(currentModuleIndex - 1);
+      if (onExportScreen) {
+        onExportScreen = false;
+        document.getElementById('btn-next').style.display = '';
+        navigateTo(currentModuleIndex);
+      } else if (currentModuleIndex > 0) {
+        navigateTo(currentModuleIndex - 1);
+      }
     });
     document.getElementById('btn-skip').addEventListener('click', goNext);
 
