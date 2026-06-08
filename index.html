@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KI-Use-Case-Navigator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="top-bar">
+    <header class="app-header">
+      <div class="header-inner">
+        <h1 id="app-title">KI-Use-Case-Navigator</h1>
+        <p id="app-subtitle" class="app-subtitle"></p>
+      </div>
+    </header>
+    <div class="progress-wrapper">
+      <nav id="progress-bar" class="progress-bar" aria-label="Fortschritt durch den Navigator"></nav>
+    </div>
+  </div>
+
+  <main id="module-container" class="module-container" role="main"></main>
+
+  <div class="nav-footer">
+    <div class="nav-inner">
+      <button id="btn-back" type="button" class="btn btn-secondary">← Zurück</button>
+      <button id="btn-skip" type="button" class="btn btn-ghost">Überspringen</button>
+      <button id="btn-next" type="button" class="btn btn-primary">Weiter →</button>
+    </div>
+  </div>
+
+  <div id="resume-dialog" class="dialog-overlay hidden"
+       role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <div class="dialog-box">
+      <h2 id="dialog-title">Gespeicherten Fortschritt fortsetzen?</h2>
+      <p id="dialog-info">Es wurden gespeicherte Eingaben gefunden.</p>
+      <div class="dialog-actions">
+        <button id="btn-resume-yes" type="button" class="btn btn-primary">Fortsetzen</button>
+        <button id="btn-resume-no"  type="button" class="btn btn-secondary">Neu beginnen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="content.js"></script>
+  <script src="wizard.js"></script>
+</body>
+</html>
