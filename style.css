@@ -144,13 +144,32 @@ mark.g {
   font-weight: 700;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  padding: 6px 12px;
+  padding: 6px 12px 5px;
   cursor: pointer;
   color: var(--nz-ink-50);
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   transition: background var(--nz-dur) var(--nz-ease),
               color var(--nz-dur) var(--nz-ease);
 }
+.step-label { display: block; }
+.step-bar-wrap {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+  margin-top: 4px;
+}
+.step-bar-fill {
+  display: block;
+  height: 3px;
+  background: var(--nz-green);
+  transition: width 0.3s ease;
+}
+.progress-step.visited .step-bar-wrap { background: var(--nz-ink-20); }
+.progress-step.active  .step-bar-wrap { background: rgba(255,255,255,0.3); }
 
 .progress-step.visited { color: var(--nz-ink-70); }
 
@@ -689,6 +708,62 @@ mark.g {
   transition: color var(--nz-dur);
 }
 .site-footer-links a:hover { color: var(--nz-ink); }
+
+/* ── Print-View (screen: versteckt) ─────────────────────────────────────── */
+#print-view { display: none; }
+
+/* ── Druckansicht ────────────────────────────────────────────────────────── */
+@media print {
+  body > *:not(#print-view) { display: none !important; }
+
+  #print-view {
+    display: block !important;
+    font-family: "Inter", sans-serif;
+    font-size: 11pt;
+    color: #000;
+    padding: 0;
+    margin: 0;
+  }
+
+  .print-header { margin-bottom: 20pt; border-bottom: 2pt solid #000; padding-bottom: 8pt; }
+  .print-header h1 {
+    font-family: "Zilla Slab", serif;
+    font-size: 20pt;
+    font-weight: 700;
+    margin-bottom: 4pt;
+  }
+  .print-meta { font-size: 9pt; color: #555; }
+
+  .print-section {
+    page-break-inside: avoid;
+    margin-bottom: 18pt;
+  }
+  .print-section h2 {
+    font-family: "Zilla Slab", serif;
+    font-size: 13pt;
+    font-weight: 700;
+    border-bottom: 1pt solid #000;
+    padding-bottom: 4pt;
+    margin-bottom: 8pt;
+  }
+  .print-section table { width: 100%; border-collapse: collapse; }
+  .print-label {
+    font-weight: 600;
+    width: 35%;
+    vertical-align: top;
+    padding: 3pt 8pt 3pt 0;
+    font-size: 10pt;
+  }
+  .print-value { vertical-align: top; padding: 3pt 0; font-size: 10pt; }
+
+  .print-footer {
+    font-size: 8pt;
+    color: #777;
+    border-top: 1pt solid #ccc;
+    padding-top: 6pt;
+    margin-top: 20pt;
+  }
+}
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 479px) {

@@ -47,6 +47,7 @@
         currentModuleIndex
       }));
     } catch (_) { /* Quota oder Private Browsing */ }
+    updateProgressBars();
   }
 
   function loadFromStorage() {
@@ -479,20 +480,63 @@
     renderModule(currentModuleIndex);
   }
 
+  // ── Fortschrittsanzeige pro Modul ─────────────────────────────────────────
+
+  function getModuleCompletion(moduleId) {
+    const module = NAVIGATOR.modules.find(m => m.id === moduleId);
+    if (!module) return { pct: 0 };
+
+    const inputFields = module.fields.filter(f =>
+      f.type !== 'info' && f.type !== 'checklist' && isFieldVisible(f)
+    );
+    const filled = inputFields.filter(f => {
+      const val = responses[f.id];
+      if (val === undefined || val === null || val === '') return false;
+      if (Array.isArray(val) && val.length === 0) return false;
+      return true;
+    });
+    const pct = inputFields.length > 0
+      ? Math.round((filled.length / inputFields.length) * 100)
+      : 0;
+    return { pct };
+  }
+
+  function updateProgressBars() {
+    document.querySelectorAll('.progress-step[data-idx]').forEach(btn => {
+      const idx = parseInt(btn.dataset.idx, 10);
+      const module = NAVIGATOR.modules[idx];
+      if (!module) return;
+      const { pct } = getModuleCompletion(module.id);
+      const fill = btn.querySelector('.step-bar-fill');
+      if (fill) fill.style.width = pct + '%';
+    });
+  }
+
   // ── Fortschrittsbalken ─────────────────────────────────────────────────────
 
   function updateProgressBar(activeIdx) {
     const nav = document.getElementById('progress-bar');
     nav.innerHTML = '';
     NAVIGATOR.modules.forEach((mod, i) => {
+      const isActive  = i === activeIdx;
+      const isVisited = responses['_visited_' + mod.id] || i < activeIdx;
       const btn = document.createElement('button');
       btn.type = 'button';
+      btn.dataset.idx = i;
       btn.className = 'progress-step' +
-        (i === activeIdx ? ' active'   : '') +
-        (i < activeIdx  ? ' visited'  : '');
-      btn.textContent = mod.progressLabel;
-      btn.setAttribute('aria-current', i === activeIdx ? 'step' : 'false');
+        (isActive  ? ' active'  : '') +
+        (isVisited ? ' visited' : '');
+      btn.setAttribute('aria-current', isActive ? 'step' : 'false');
       btn.addEventListener('click', () => navigateTo(i));
+
+      const { pct } = getModuleCompletion(mod.id);
+      const showBar = isVisited || isActive;
+      btn.innerHTML =
+        `<span class="step-label">${escapeHtml(mod.progressLabel)}</span>` +
+        `<span class="step-bar-wrap">` +
+        (showBar ? `<span class="step-bar-fill" style="width:${pct}%"></span>` : '') +
+        `</span>`;
+
       nav.appendChild(btn);
     });
   }
@@ -507,6 +551,9 @@
   }
 
   function navigateTo(idx) {
+    // Aktuelles Modul als besucht markieren
+    const leaving = NAVIGATOR.modules[currentModuleIndex];
+    if (leaving) responses['_visited_' + leaving.id] = true;
     currentModuleIndex = idx;
     saveToStorage();
     renderModule(idx);
@@ -841,6 +888,7 @@
         <div class="export-buttons">
           <button id="btn-dl-md"  class="btn btn-primary btn-export">↓ Markdown (.md)</button>
           <button id="btn-dl-pdf" class="btn btn-primary btn-export">↓ PDF herunterladen</button>
+          <button id="btn-print"  class="btn btn-secondary btn-export">&#x1F5A8; Drucken</button>
         </div>
       </div>
       <div class="export-preview-box field">
@@ -860,6 +908,47 @@
 
     document.getElementById('btn-dl-md').addEventListener('click',  downloadMarkdown);
     document.getElementById('btn-dl-pdf').addEventListener('click', downloadPDF);
+    document.getElementById('btn-print').addEventListener('click',  printSteckbrief);
+  }
+
+  // ── Druckansicht ───────────────────────────────────────────────────────────
+
+  function printSteckbrief() {
+    document.getElementById('print-view').innerHTML = buildPrintHTML();
+    window.print();
+    setTimeout(() => { document.getElementById('print-view').innerHTML = ''; }, 1000);
+  }
+
+  function buildPrintHTML() {
+    const cfg      = NAVIGATOR.exportConfig;
+    const sections = getExportSections();
+    const dateStr  = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+    let html = `<div class="print-header">
+      <h1>${escapeHtml(getDocTitle())}</h1>
+      <p class="print-meta">${escapeHtml(cfg.document.subtitle)} &mdash; Erstellt am ${dateStr}</p>
+    </div>`;
+
+    sections.forEach(section => {
+      const rows = section.fields.map(fid => {
+        const field = getFieldDef(fid);
+        if (!field || !field.output) return '';
+        const val = getDisplayValue(field, responses[fid]);
+        if (!val) return '';
+        const safeLabel = escapeHtml(field.output.label);
+        const safeVal   = escapeHtml(val).replace(/\n/g, '<br>');
+        return `<tr><td class="print-label">${safeLabel}</td><td class="print-value">${safeVal}</td></tr>`;
+      }).filter(Boolean).join('');
+
+      if (!rows) return;
+      html += `<div class="print-section">
+        <h2>${escapeHtml(getSectionTitle(section))}</h2>
+        <table>${rows}</table>
+      </div>`;
+    });
+
+    html += `<p class="print-footer">${escapeHtml(cfg.document.footerNote)}</p>`;
+    return html;
   }
 
   // ── Initialisierung ────────────────────────────────────────────────────────
