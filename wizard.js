@@ -18,11 +18,33 @@
     'm4_rechtliche_bindung', 'm4_nutzen_aufwand'
   ];
 
+  const ONBOARDING_SCREENS = [
+    {
+      icon: '🧭',
+      title: 'Was ist der KI-Use-Case-Navigator?',
+      body: 'Ein Werkzeug zur strukturierten Reflexion deines KI-Vorhabens in der Kommunalverwaltung — von der ersten Idee bis zur begründeten Entscheidung.',
+      hint: null
+    },
+    {
+      icon: '⏱',
+      title: 'Wie lange dauert das?',
+      body: 'Ca. 15–25 Minuten — je nachdem, wie weit dein Use Case schon konkretisiert ist. Alle Felder sind freiwillig. Du kannst jederzeit unterbrechen und weitermachen.',
+      hint: 'Dein Fortschritt wird automatisch im Browser gespeichert.'
+    },
+    {
+      icon: '📄',
+      title: 'Was bekommst du am Ende?',
+      body: 'Einen persönlichen Use-Case-Steckbrief mit Selbstbewertung — zum Herunterladen als Markdown oder PDF. Alle Daten bleiben ausschließlich in deinem Browser.',
+      hint: null
+    }
+  ];
+
   // ── App-State ──────────────────────────────────────────────────────────────
   let state    = {};   // { use_case_typ, ki_eignung, hosting_typ }
   let responses = {};  // { fieldId: value, ... }
   let currentModuleIndex = 0;
   let onExportScreen = false;
+  let onboardingIndex = -1; // >= 0 wenn Onboarding aktiv
 
   // ── Hilfsfunktionen ────────────────────────────────────────────────────────
 
@@ -430,6 +452,49 @@
       });
     });
     return out;
+  }
+
+  // ── Onboarding ─────────────────────────────────────────────────────────────
+
+  function renderOnboarding(idx) {
+    onboardingIndex = idx;
+    const screen = ONBOARDING_SCREENS[idx];
+    const container = document.getElementById('module-container');
+    container.innerHTML = '';
+
+    let dotsHtml = '<div class="onboarding-dots">';
+    ONBOARDING_SCREENS.forEach((_, i) => {
+      dotsHtml += `<span class="dot${i === idx ? ' active' : ''}"></span>`;
+    });
+    dotsHtml += '</div>';
+
+    const wrap = document.createElement('div');
+    wrap.className = 'onboarding-screen';
+    wrap.innerHTML =
+      `<div class="onboarding-icon">${screen.icon}</div>` +
+      `<h2 class="onboarding-title">${escapeHtml(screen.title)}</h2>` +
+      `<p class="onboarding-body">${escapeHtml(screen.body)}</p>` +
+      (screen.hint ? `<p class="onboarding-hint">${escapeHtml(screen.hint)}</p>` : '') +
+      dotsHtml;
+    container.appendChild(wrap);
+
+    // Progress-Bar ausblenden
+    document.getElementById('progress-bar').innerHTML = '';
+
+    const btnBack = document.getElementById('btn-back');
+    const btnSkip = document.getElementById('btn-skip');
+    const btnNext = document.getElementById('btn-next');
+    btnBack.disabled = idx === 0;
+    btnSkip.style.display = '';
+    btnNext.style.display = '';
+    btnNext.textContent = idx === ONBOARDING_SCREENS.length - 1 ? 'Los geht\'s →' : 'Weiter →';
+  }
+
+  function finishOnboarding() {
+    onboardingIndex = -1;
+    responses['_onboarding_done'] = true;
+    saveToStorage();
+    startFresh();
   }
 
   // ── Modul-Rendering ────────────────────────────────────────────────────────
@@ -967,11 +1032,30 @@
     if (hasSaved) {
       showResumeDialog(saved.savedAt);
     } else {
-      startFresh();
+      const onboardingDone = saved && saved.responses && saved.responses['_onboarding_done'];
+      if (onboardingDone) {
+        startFresh();
+      } else {
+        renderOnboarding(0);
+      }
     }
 
-    document.getElementById('btn-next').addEventListener('click', goNext);
+    document.getElementById('btn-next').addEventListener('click', () => {
+      if (onboardingIndex >= 0) {
+        if (onboardingIndex < ONBOARDING_SCREENS.length - 1) {
+          renderOnboarding(onboardingIndex + 1);
+        } else {
+          finishOnboarding();
+        }
+        return;
+      }
+      goNext();
+    });
     document.getElementById('btn-back').addEventListener('click', () => {
+      if (onboardingIndex > 0) {
+        renderOnboarding(onboardingIndex - 1);
+        return;
+      }
       if (onExportScreen) {
         onExportScreen = false;
         document.getElementById('btn-next').style.display = '';
@@ -980,7 +1064,13 @@
         navigateTo(currentModuleIndex - 1);
       }
     });
-    document.getElementById('btn-skip').addEventListener('click', goNext);
+    document.getElementById('btn-skip').addEventListener('click', () => {
+      if (onboardingIndex >= 0) {
+        finishOnboarding();
+        return;
+      }
+      goNext();
+    });
 
     document.getElementById('btn-resume-yes').addEventListener('click', () => {
       hideResumeDialog();
@@ -1003,7 +1093,9 @@
 
   function startFresh() {
     resetState();
+    const onboardingDone = responses['_onboarding_done'];
     responses = {};
+    if (onboardingDone) responses['_onboarding_done'] = true;
     currentModuleIndex = 0;
     renderModule(0);
   }
