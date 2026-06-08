@@ -672,40 +672,23 @@ mark.g {
   overflow-y: auto;
 }
 
-/* ── Site-Footer ─────────────────────────────────────────────────────────── */
-.site-footer {
-  max-width: var(--nz-container);
-  margin: 0 auto;
-  padding: 32px 20px 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  border-top: var(--nz-stroke-hair) solid var(--nz-ink-20);
-}
+/* ── Site-Footer (inside nav-footer) ────────────────────────────────────── */
 .site-footer-links {
   display: flex;
-  gap: 20px;
+  gap: 14px;
   flex-wrap: wrap;
+  align-items: center;
 }
-.site-footer a {
+.site-footer-links a {
   font-family: var(--nz-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
+  font-size: 10px;
+  letter-spacing: 0.03em;
   color: var(--nz-ink-50);
   text-decoration: none;
+  white-space: nowrap;
   transition: color var(--nz-dur);
 }
-.site-footer a:hover { color: var(--nz-ink); }
-.site-footer-brand {
-  font-family: var(--nz-font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--nz-ink-50);
-  text-decoration: none;
-}
-.site-footer-brand:hover { color: var(--nz-ink); }
+.site-footer-links a:hover { color: var(--nz-ink); }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 479px) {
