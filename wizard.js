@@ -973,8 +973,10 @@
   function getShareURL() {
     const payload = { v: 1, r: responses, s: state };
     const json    = JSON.stringify(payload);
-    const encoded = btoa(unescape(encodeURIComponent(json)));
-    return window.location.href.split('#')[0] + '#share=' + encoded;
+    const bytes   = new TextEncoder().encode(json);
+    const encoded = btoa(String.fromCharCode(...bytes));
+    const base    = window.location.origin + window.location.pathname;
+    return base + '#share=' + encoded;
   }
 
   function loadFromURLHash() {
@@ -982,7 +984,8 @@
     if (!hash.startsWith('#share=')) return false;
     try {
       const encoded = hash.slice(7);
-      const json    = decodeURIComponent(escape(atob(encoded)));
+      const bytes   = Uint8Array.from(atob(encoded), c => c.charCodeAt(0));
+      const json    = new TextDecoder().decode(bytes);
       const payload = JSON.parse(json);
       if (!payload.r) return false;
       responses = payload.r;
@@ -1096,10 +1099,13 @@
   }
 
   // Start
+  function startInit() {
+    init().catch(err => console.error('Navigator-Initialisierung fehlgeschlagen:', err));
+  }
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', startInit);
   } else {
-    init();
+    startInit();
   }
 
 })();
