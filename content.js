@@ -267,7 +267,7 @@ const NAVIGATOR = {
           required: false,
           options: [
             { value: "zeitersparnis",    label: "Zeitersparnis / Effizienz" },
-            { value: "qualitaet",        label: "Qualitätssteigerung" },
+            { value: "qualität",        label: "Qualitätssteigerung" },
             { value: "erreichbarkeit",   label: "Bessere Erreichbarkeit / Verfügbarkeit" },
             { value: "entlastung",       label: "Entlastung von Routineaufgaben" },
             { value: "wissen",           label: "Besserer Zugang zu Wissen" },
@@ -399,7 +399,7 @@ const NAVIGATOR = {
         },
 
         {
-          id: "m3_unterstuetzung",
+          id: "m3_unterstützung",
           type: "select",
           label: "Wie stark ist die interne Unterstützung für deinen Use Case?",
           required: false,
@@ -503,7 +503,7 @@ NAVIGATOR.modules.push({
     },
 
     {
-      id: "m4_haeufigkeit",
+      id: "m4_häufigkeit",
       type: "select",
       label: "Wie häufig tritt die Aufgabe auf, die KI übernehmen soll?",
       hint: "Hohe Häufigkeit erhöht den Nutzen von Automatisierung.",
@@ -735,7 +735,7 @@ NAVIGATOR.modules.push({
       id: "m4_lockin_begruendung",
       type: "textarea",
       label: "Warum gehst du diese Kompromisse ein — und unter welchen Bedingungen?",
-      hint: 'z.B.: Wir akzeptieren Cloud-Abhaengigkeit, weil kommunale Plattform erst spaeter verfuegbar -- jaehrliche Pruefung des Wechsels geplant.',
+      hint: 'z.B.: Wir akzeptieren Cloud-Abhängigkeit, weil kommunale Plattform erst später verfügbar - jährliche Prüfung des Wechsels geplant.',
       required: false,
       showWhen: { stateKey: "ki_eignung", values: ["ja", "bedingt"] },
       rows: 4,
@@ -757,29 +757,29 @@ NAVIGATOR.modules.push({
   fields: [
 
     { id:"m5_intro", type:"info", content:[
-      "Datenschutz ist keine nachgelagerte Pruefung -- er muss von Anfang an in die Konzeption einfliessen.",
-      "Die folgenden Fragen orientieren sich an der BfDI-Handreichung KI in Behoerden (Dezember 2025) sowie an DSGVO und EU-KI-Gesetz."
+      "Datenschutz ist keine nachgelagerte Prüfung - er muss von Anfang an in die Konzeption einfließen.",
+      "Die folgenden Fragen orientieren sich an der BfDI-Handreichung KI in Behörden (Dezember 2025) sowie an DSGVO und EU-KI-Gesetz."
     ]},
 
-    { id:"m5_s_a", type:"info", content:["A -- Personenbezogene Daten"]},
+    { id:"m5_s_a", type:"info", content:["A - Personenbezogene Daten"]},
 
     { id:"m5_pb_daten", type:"select",
       label:"Verarbeitet dein Use Case personenbezogene Daten?",
-      hint:"Personenbezogen = alle Daten, die einer identifizierbaren Person zugeordnet werden koennen.",
+      hint:"Personenbezogen = alle Daten, die einer identifizierbaren Person zugeordnet werden können.",
       required:false,
       source:{ label:"DSGVO Art. 4 Nr. 1; BfDI-Handreichung Kap. 2", text:"Auch indirekt identifizierbare Daten (Pseudonyme, Merkmalskombinationen) gelten als personenbezogen." },
       options:[
-        { value:"ja_direkt",   label:"Ja -- direkt personenbezogen (Name, Adresse, Fallnummer)" },
-        { value:"ja_indirekt", label:"Ja -- indirekt personenbezogen (Pseudonyme, Kombinationen)" },
-        { value:"nein",        label:"Nein -- ausschliesslich anonyme oder aggregierte Daten" },
-        { value:"unklar",      label:"Noch nicht geprueft" }
+        { value:"ja_direkt",   label:"Ja - direkt personenbezogen (Name, Adresse, Fallnummer)" },
+        { value:"ja_indirekt", label:"Ja - indirekt personenbezogen (Pseudonyme, Kombinationen)" },
+        { value:"nein",        label:"Nein - ausschliesslich anonyme oder aggregierte Daten" },
+        { value:"unklar",      label:"Noch nicht geprüft" }
       ],
       output:{ label:"Personenbezogene Daten verarbeitet", section:"datenschutz" }
     },
 
     { id:"m5_datenkategorien", type:"multiselect",
       label:"Welche Datenkategorien werden verarbeitet?",
-      hint:"Besondere Kategorien (Art. 9 DSGVO) erfordern erhoehten Schutz und in der Regel eine DSFA.",
+      hint:"Besondere Kategorien (Art. 9 DSGVO) erfordern erhöhten Schutz und in der Regel eine DSFA.",
       required:false,
       showWhen:{ field:"m5_pb_daten", values:["ja_direkt","ja_indirekt"] },
       source:{ label:"DSGVO Art. 9; BfDI-Handreichung Kap. 3.1", text:"Besondere Kategorien duerfen nur in eng definierten Ausnahmen verarbeitet werden." },
@@ -787,7 +787,7 @@ NAVIGATOR.modules.push({
         { value:"kontaktdaten",   label:"Kontaktdaten (Name, Adresse, E-Mail)" },
         { value:"fallbezogen",    label:"Fallbezogene Verwaltungsdaten (Aktenzeichen, Vorgang)" },
         { value:"beschaeftigte",  label:"Beschaeftigtendaten" },
-        { value:"gesundheit",     label:"Gesundheitsdaten [Art. 9 DSGVO -- besondere Kategorie]" },
+        { value:"gesundheit",     label:"Gesundheitsdaten [Art. 9 DSGVO - besondere Kategorie]" },
         { value:"sozial",         label:"Sozialdaten (SGB)" },
         { value:"finanzen",       label:"Finanz- und Einkommensdaten" },
         { value:"biometrie",      label:"Biometrische Daten [Art. 9 DSGVO]" },
@@ -797,40 +797,40 @@ NAVIGATOR.modules.push({
     },
 
     { id:"m5_rechtsgrundlage", type:"select",
-      label:"Auf welche Rechtsgrundlage stuetzt sich die Datenverarbeitung?",
+      label:"Auf welche Rechtsgrundlage stützt sich die Datenverarbeitung?",
       required:false,
       showWhen:{ field:"m5_pb_daten", values:["ja_direkt","ja_indirekt"] },
-      source:{ label:"DSGVO Art. 6; BfDI-Handreichung Kap. 2.2", text:"Fuer Behoerden kommt meist Art. 6 Abs. 1 lit. e (oeffentliches Interesse) in Betracht. Die BfDI empfiehlt, die konkrete Aufgabennorm zu benennen." },
+      source:{ label:"DSGVO Art. 6; BfDI-Handreichung Kap. 2.2", text:"Für Behörden kommt meist Art. 6 Abs. 1 lit. e (öffentliches Interesse) in Betracht. Die BfDI empfiehlt, die konkrete Aufgabennorm zu benennen." },
       options:[
-        { value:"gesetzlich",    label:"Gesetzliche Aufgabe / oeffentliches Interesse (Art. 6 Abs. 1 lit. e) -- haeufigste Grundlage fuer Behoerden" },
+        { value:"gesetzlich",    label:"Gesetzliche Aufgabe / öffentliches Interesse (Art. 6 Abs. 1 lit. e) - häufigste Grundlage für Behörden" },
         { value:"einwilligung",  label:"Einwilligung (Art. 6 Abs. 1 lit. a)" },
         { value:"vertrag",       label:"Vertragserfuellung (Art. 6 Abs. 1 lit. b)" },
         { value:"rechtspflicht", label:"Rechtliche Verpflichtung (Art. 6 Abs. 1 lit. c)" },
-        { value:"unklar",        label:"Noch nicht geklaert" }
+        { value:"unklar",        label:"Noch nicht geklärt" }
       ],
       output:{ label:"Rechtsgrundlage", section:"datenschutz" }
     },
 
-    { id:"m5_s_b", type:"info", content:["B -- Datenschutz-Folgenabschaetzung (DSFA)"]},
+    { id:"m5_s_b", type:"info", content:["B - Datenschutz-Folgenabschaetzung (DSFA)"]},
 
-    { id:"m5_dsfa_geprueft", type:"select",
-      label:"Wurde geprueft, ob eine Datenschutz-Folgenabschaetzung (DSFA) erforderlich ist?",
+    { id:"m5_dsfa_geprüft", type:"select",
+      label:"Wurde geprüft, ob eine Datenschutz-Folgenabschaetzung (DSFA) erforderlich ist?",
       required:false,
-      source:{ label:"DSGVO Art. 35; BfDI-Handreichung Kap. 4", text:"Die BfDI empfiehlt: Bei KI-Systemen, die systematisch personenbezogene Daten verarbeiten, ist eine DSFA in der Regel erforderlich. Zwei oder mehr DSFA-Ausloeserfaktoren machen sie zwingend." },
+      source:{ label:"DSGVO Art. 35; BfDI-Handreichung Kap. 4", text:"Die BfDI empfiehlt: Bei KI-Systemen, die systematisch personenbezogene Daten verarbeiten, ist eine DSFA in der Regel erforderlich. Zwei oder mehr DSFA-Auslöserfaktoren machen sie zwingend." },
       options:[
-        { value:"ja_erforderlich", label:"Ja -- DSFA ist erforderlich und laeuft oder ist abgeschlossen" },
-        { value:"ja_nicht_erf",    label:"Ja geprueft -- DSFA nicht erforderlich (mit Begruendung)" },
-        { value:"noch_nicht",      label:"Noch nicht geprueft" },
+        { value:"ja_erforderlich", label:"Ja - DSFA ist erforderlich und laeuft oder ist abgeschlossen" },
+        { value:"ja_nicht_erf",    label:"Ja geprüft - DSFA nicht erforderlich (mit Begründung)" },
+        { value:"noch_nicht",      label:"Noch nicht geprüft" },
         { value:"unbekannt",       label:"Ich weiss nicht, was eine DSFA ist" }
       ],
-      output:{ label:"DSFA geprueft", section:"datenschutz" }
+      output:{ label:"DSFA geprüft", section:"datenschutz" }
     },
 
     { id:"m5_dsfa_kriterien", type:"multiselect",
-      label:"Welche DSFA-Ausloeserfaktoren treffen auf deinen Use Case zu?",
+      label:"Welche DSFA-Auslöserfaktoren treffen auf deinen Use Case zu?",
       hint:"Zwei oder mehr Faktoren machen eine DSFA zwingend (BfDI / DSK-Empfehlung).",
       required:false,
-      source:{ label:"DSK-Blacklist; BfDI-Handreichung Kap. 4.2", text:"Die Datenschutzkonferenz (DSK) hat Listen veroeffentlicht, welche Verarbeitungsarten eine DSFA zwingend erfordern. KI-gestuetzte Entscheidungen mit Rechtswirkung sind regelmaessig enthalten." },
+      source:{ label:"DSK-Blacklist; BfDI-Handreichung Kap. 4.2", text:"Die Datenschutzkonferenz (DSK) hat Listen veröffentlicht, welche Verarbeitungsarten eine DSFA zwingend erfordern. KI-gestützte Entscheidungen mit Rechtswirkung sind regelmäßig enthalten." },
       options:[
         { value:"systematisch",     label:"Systematische Verarbeitung auf grosser Skala" },
         { value:"profiling",        label:"Profiling oder automatisierte Entscheidungen mit Rechtswirkung" },
@@ -839,79 +839,79 @@ NAVIGATOR.modules.push({
         { value:"neue_technologie", label:"Neue Technologie mit noch unbekannten Risiken" },
         { value:"keiner",           label:"Keiner der genannten Faktoren trifft zu" }
       ],
-      output:{ label:"DSFA-Ausloeserfaktoren", section:"datenschutz" }
+      output:{ label:"DSFA-Auslöserfaktoren", section:"datenschutz" }
     },
 
-    { id:"m5_s_c", type:"info", content:["C -- Auftragsverarbeitung und Datentransfer"]},
+    { id:"m5_s_c", type:"info", content:["C - Auftragsverarbeitung und Datentransfer"]},
 
     { id:"m5_avv", type:"select",
       label:"Gibt es einen Auftragsverarbeitungsvertrag (AVV) mit dem KI-Anbieter?",
       required:false,
       source:{ label:"DSGVO Art. 28; BfDI-Handreichung Kap. 5.1", text:"Sobald ein externer Anbieter personenbezogene Daten im Auftrag verarbeitet, ist ein AVV zwingend." },
       options:[
-        { value:"ja",          label:"Ja -- AVV liegt vor oder ist in Vorbereitung" },
-        { value:"nein_extern", label:"Nein -- trotz externer Verarbeitung kein AVV vorhanden [kritisch]" },
-        { value:"nicht_erf",   label:"Nicht erforderlich -- rein interne Verarbeitung" },
-        { value:"unklar",      label:"Noch nicht geprueft" }
+        { value:"ja",          label:"Ja - AVV liegt vor oder ist in Vorbereitung" },
+        { value:"nein_extern", label:"Nein - trotz externer Verarbeitung kein AVV vorhanden [kritisch]" },
+        { value:"nicht_erf",   label:"Nicht erforderlich - rein interne Verarbeitung" },
+        { value:"unklar",      label:"Noch nicht geprüft" }
       ],
       output:{ label:"Auftragsverarbeitungsvertrag (AVV)", section:"datenschutz" }
     },
 
     { id:"m5_drittland", type:"select",
-      label:"Werden Daten in ein Drittland (ausserhalb EU/EWR) uebertragen?",
+      label:"Werden Daten in ein Drittland (außerhalb EU/EWR) übertragen?",
       hint:"Relevant auch bei US-Anbietern mit EU-Rechenzentrum (CLOUD Act).",
       required:false,
       showWhen:{ stateKey:"hosting_typ", values:["cloud_extern","cloud_us"] },
-      source:{ label:"DSGVO Kap. V; Schrems-II EuGH 2020; BfDI-Handreichung Kap. 5.2", text:"Nach dem Schrems-II-Urteil reichen EU-Standardvertragsklauseln allein nicht aus, wenn US-Behoerden Zugriff haben koennten. Die BfDI empfiehlt einzelfallbezogene Transfer Impact Assessments." },
+      source:{ label:"DSGVO Kap. V; Schrems-II EuGH 2020; BfDI-Handreichung Kap. 5.2", text:"Nach dem Schrems-II-Urteil reichen EU-Standardvertragsklauseln allein nicht aus, wenn US-Behörden Zugriff haben könnten. Die BfDI empfiehlt einzelfallbezogene Transfer Impact Assessments." },
       options:[
-        { value:"nein",            label:"Nein -- Daten bleiben im EU/EWR-Raum" },
-        { value:"ja_scc",          label:"Ja -- mit EU-Standardvertragsklauseln (SCC)" },
-        { value:"ja_ungeklaert",   label:"Ja -- Absicherung noch nicht geklaert [kritisch]" },
-        { value:"moeglicherweise", label:"Moeglicherweise -- US-Anbieter mit EU-Rechenzentrum" },
+        { value:"nein",            label:"Nein - Daten bleiben im EU/EWR-Raum" },
+        { value:"ja_scc",          label:"Ja - mit EU-Standardvertragsklauseln (SCC)" },
+        { value:"ja_ungeklärt",   label:"Ja - Absicherung noch nicht geklärt [kritisch]" },
+        { value:"möglicherweise", label:"Möglicherweise - US-Anbieter mit EU-Rechenzentrum" },
         { value:"unklar",          label:"Noch nicht untersucht" }
       ],
-      output:{ label:"Drittlandsuebermittlung", section:"datenschutz" }
+      output:{ label:"Drittlandsübermittlung", section:"datenschutz" }
     },
 
-    { id:"m5_s_d", type:"info", content:["D -- EU-KI-Gesetz (AI Act)"]},
+    { id:"m5_s_d", type:"info", content:["D - EU-KI-Gesetz (AI Act)"]},
 
     { id:"m5_aiact_risikoklasse", type:"select",
       label:"Faellt dein Use Case unter die Hochrisiko-Kategorie des EU-KI-Gesetzes?",
-      hint:"Hochrisiko in der oeffentlichen Verwaltung: z.B. Systeme zur Bewertung von Personen, Bearbeitung von Sozialleistungen, Bildung.",
+      hint:"Hochrisiko in der öffentlichen Verwaltung: z.B. Systeme zur Bewertung von Personen, Bearbeitung von Sozialleistungen, Bildung.",
       required:false,
-      source:{ label:"EU AI Act Art. 6, Anhang III; BfDI-Handreichung Kap. 6", text:"Hochrisiko-Systeme unterliegen strengen Anforderungen: Konformitaetsbewertung, Registrierung in der EU-Datenbank, Transparenz, menschliche Aufsicht. Gilt fuer Anbieter und Betreiber gleichermassen." },
+      source:{ label:"EU AI Act Art. 6, Anhang III; BfDI-Handreichung Kap. 6", text:"Hochrisiko-Systeme unterliegen strengen Anforderungen: Konformitätsbewertung, Registrierung in der EU-Datenbank, Transparenz, menschliche Aufsicht. Gilt für Anbieter und Betreiber gleichermaßen." },
       options:[
-        { value:"ja_hochrisiko", label:"Ja -- System faellt wahrscheinlich unter Anhang III (Hochrisiko)" },
-        { value:"nein",          label:"Nein -- kein Hochrisiko-System" },
+        { value:"ja_hochrisiko", label:"Ja - System faellt wahrscheinlich unter Anhang III (Hochrisiko)" },
+        { value:"nein",          label:"Nein - kein Hochrisiko-System" },
         { value:"begrenzt",      label:"Begrenztes Risiko (z.B. Chatbot mit Kennzeichnungspflicht)" },
-        { value:"unklar",        label:"Noch nicht eingeschaetzt" }
+        { value:"unklar",        label:"Noch nicht eingeschätzt" }
       ],
       output:{ label:"AI Act Risikoklasse", section:"datenschutz" }
     },
 
     { id:"m5_aiact_verbote", type:"select",
-      label:"Wurde geprueft, ob der Use Case unter verbotene KI-Praktiken faellt?",
-      hint:"Verboten u.a.: Social Scoring durch Behoerden, biometrische Echtzeitueberwachung im oeffentlichen Raum.",
+      label:"Wurde geprüft, ob der Use Case unter verbotene KI-Praktiken faellt?",
+      hint:"Verboten u.a.: Social Scoring durch Behörden, biometrische Echtzeitüberwachung im öffentlichen Raum.",
       required:false,
-      source:{ label:"EU AI Act Art. 5; BfDI-Handreichung Kap. 6.1", text:"Art. 5 AI Act enthaelt absolute Verbote -- auch fuer Behoerden, ohne Ausnahmemoeglichkeit. Die BfDI empfiehlt, diese Pruefung fruehzeitig und dokumentiert durchzufuehren." },
+      source:{ label:"EU AI Act Art. 5; BfDI-Handreichung Kap. 6.1", text:"Art. 5 AI Act enthält absolute Verbote - auch für Behörden, ohne Ausnahmemöglichkeit. Die BfDI empfiehlt, diese Prüfung frühzeitig und dokumentiert durchzufuehren." },
       options:[
-        { value:"geprueft_nein", label:"Ja geprueft -- kein Verstoss gegen Art. 5 AI Act" },
-        { value:"noch_nicht",    label:"Noch nicht geprueft" },
+        { value:"geprüft_nein", label:"Ja geprüft - kein Verstoss gegen Art. 5 AI Act" },
+        { value:"noch_nicht",    label:"Noch nicht geprüft" },
         { value:"unklar",        label:"Ich bin mir nicht sicher" }
       ],
-      output:{ label:"AI Act Verbote geprueft", section:"datenschutz" }
+      output:{ label:"AI Act Verbote geprüft", section:"datenschutz" }
     },
 
-    { id:"m5_s_e", type:"info", content:["E -- Transparenz und menschliche Kontrolle"]},
+    { id:"m5_s_e", type:"info", content:["E - Transparenz und menschliche Kontrolle"]},
 
     { id:"m5_automatisierung", type:"select",
-      label:"Trifft das System automatisierte Entscheidungen mit Wirkung gegenueber Personen?",
+      label:"Trifft das System automatisierte Entscheidungen mit Wirkung gegenüber Personen?",
       required:false,
-      source:{ label:"DSGVO Art. 22; Paragr. 35a VwVfG; BfDI-Handreichung Kap. 3.3", text:"Art. 22 DSGVO schuetzt vor vollautomatisierten Entscheidungen mit Rechtswirkung. Paragr. 35a VwVfG erlaubt automatisierte Verwaltungsakte nur in eng definierten Faellen." },
+      source:{ label:"DSGVO Art. 22; Paragr. 35a VwVfG; BfDI-Handreichung Kap. 3.3", text:"Art. 22 DSGVO schützt vor vollautomatisierten Entscheidungen mit Rechtswirkung. Paragr. 35a VwVfG erlaubt automatisierte Verwaltungsakte nur in eng definierten Fällen." },
       options:[
-        { value:"nein_unterstuetzend", label:"Nein -- KI unterstuetzt, Mensch entscheidet immer final" },
-        { value:"teilautomatisiert",   label:"Teilautomatisiert -- KI-Vorschlag mit menschlicher Pruefpflicht" },
-        { value:"vollautomatisiert",   label:"Vollautomatisiert -- keine manuelle Pruefung vorgesehen [kritisch]" },
+        { value:"nein_unterstuetzend", label:"Nein - KI unterstützt, Mensch entscheidet immer final" },
+        { value:"teilautomatisiert",   label:"Teilautomatisiert - KI-Vorschlag mit menschlicher Prüfpflicht" },
+        { value:"vollautomatisiert",   label:"Vollautomatisiert - keine manuelle Prüfung vorgesehen [kritisch]" },
         { value:"unklar",              label:"Noch nicht festgelegt" }
       ],
       output:{ label:"Automatisierungsgrad", section:"datenschutz" }
@@ -920,11 +920,11 @@ NAVIGATOR.modules.push({
     { id:"m5_human_loop", type:"select",
       label:"Wie ist die menschliche Kontrolle (Human-in-the-Loop) ausgestaltet?",
       required:false,
-      source:{ label:"EU AI Act Art. 14; BfDI-Handreichung Kap. 3.4", text:"Der AI Act verlangt fuer Hochrisiko-Systeme wirksame -- nicht nur formale -- menschliche Aufsicht. Mitarbeitende muessen KI-Ausgaben tatsaechlich verstehen und bewerten koennen." },
+      source:{ label:"EU AI Act Art. 14; BfDI-Handreichung Kap. 3.4", text:"Der AI Act verlangt für Hochrisiko-Systeme wirksame - nicht nur formale - menschliche Aufsicht. Mitarbeitende müssen KI-Ausgaben tatsächlich verstehen und bewerten können." },
       options:[
-        { value:"vollstaendig",  label:"Vollstaendig -- jedes Ergebnis wird geprueft und freigegeben" },
-        { value:"stichproben",   label:"Stichprobenartig -- regelmaessige Qualitaetskontrolle" },
-        { value:"ausnahmen",     label:"Bei Grenzfaellen -- nur bei Unsicherheit" },
+        { value:"vollstaendig",  label:"Vollstaendig - jedes Ergebnis wird geprüft und freigegeben" },
+        { value:"stichproben",   label:"Stichprobenartig - regelmäßige Qualitätskontrolle" },
+        { value:"ausnahmen",     label:"Bei Grenzfaellen - nur bei Unsicherheit" },
         { value:"nicht_geplant", label:"Nicht vorgesehen [kritisch]" },
         { value:"noch_unklar",   label:"Noch nicht definiert" }
       ],
@@ -934,38 +934,38 @@ NAVIGATOR.modules.push({
     { id:"m5_transparenz", type:"select",
       label:"Werden Betroffene informiert, dass KI eingesetzt wird?",
       required:false,
-      source:{ label:"DSGVO Art. 13/14; EU AI Act Art. 50; BfDI-Handreichung Kap. 3.5", text:"Art. 50 AI Act verpflichtet zur Kennzeichnung bei KI-Interaktion (z.B. Chatbots). Die BfDI empfiehlt proaktive verstaendliche Kommunikation." },
+      source:{ label:"DSGVO Art. 13/14; EU AI Act Art. 50; BfDI-Handreichung Kap. 3.5", text:"Art. 50 AI Act verpflichtet zur Kennzeichnung bei KI-Interaktion (z.B. Chatbots). Die BfDI empfiehlt proaktive verständliche Kommunikation." },
       options:[
-        { value:"ja_aktiv",       label:"Ja -- aktiv und verstaendlich kommuniziert" },
-        { value:"ja_passiv",      label:"Ja -- in Datenschutzhinweisen erwaehnt" },
+        { value:"ja_aktiv",       label:"Ja - aktiv und verständlich kommuniziert" },
+        { value:"ja_passiv",      label:"Ja - in Datenschutzhinweisen erwaehnt" },
         { value:"geplant",        label:"Noch nicht, aber geplant" },
         { value:"nein",           label:"Nein [kritisch]" },
-        { value:"nicht_relevant", label:"Nicht relevant -- kein direkter Buergerinnen-Kontakt" }
+        { value:"nicht_relevant", label:"Nicht relevant - kein direkter Buergerinnen-Kontakt" }
       ],
-      output:{ label:"Transparenz gegenueber Betroffenen", section:"datenschutz" }
+      output:{ label:"Transparenz gegenüber Betroffenen", section:"datenschutz" }
     },
 
-    { id:"m5_s_f", type:"info", content:["F -- Datenschutzbeauftragte und Dokumentation"]},
+    { id:"m5_s_f", type:"info", content:["F - Datenschutzbeauftragte und Dokumentation"]},
 
     { id:"m5_dsb_konsultiert", type:"select",
-      label:"Wurde der/die behoerdliche Datenschutzbeauftragte (bDSB) konsultiert?",
+      label:"Wurde der/die behördliche Datenschutzbeauftragte (bDSB) konsultiert?",
       required:false,
-      source:{ label:"DSGVO Art. 38/39; BfDI-Handreichung Kap. 7", text:"Die BfDI empfiehlt: bDSB fruehzeitig einbeziehen -- nicht erst bei Inbetriebnahme. Der bDSB hat Beratungsfunktion, keine Genehmigungsfunktion." },
+      source:{ label:"DSGVO Art. 38/39; BfDI-Handreichung Kap. 7", text:"Die BfDI empfiehlt: bDSB frühzeitig einbeziehen - nicht erst bei Inbetriebnahme. Der bDSB hat Beratungsfunktion, keine Genehmigungsfunktion." },
       options:[
-        { value:"ja_aktiv",      label:"Ja -- aktiv eingebunden, laufende Beratung" },
-        { value:"ja_informiert", label:"Ja -- informiert, aber noch keine aktive Beratung" },
-        { value:"geplant",       label:"Geplant fuer naechsten Schritt" },
+        { value:"ja_aktiv",      label:"Ja - aktiv eingebunden, laufende Beratung" },
+        { value:"ja_informiert", label:"Ja - informiert, aber noch keine aktive Beratung" },
+        { value:"geplant",       label:"Geplant für nächsten Schritt" },
         { value:"nein",          label:"Noch nicht eingebunden" }
       ],
       output:{ label:"bDSB konsultiert", section:"datenschutz" }
     },
 
     { id:"m5_vvt", type:"select",
-      label:"Wurde der Use Case im Verzeichnis von Verarbeitungstaetigkeiten (VVT) erfasst?",
+      label:"Wurde der Use Case im Verzeichnis von Verarbeitungstätigkeiten (VVT) erfasst?",
       required:false,
-      source:{ label:"DSGVO Art. 30; BfDI-Handreichung Kap. 7.1", text:"KI-Einsatz stellt in der Regel eine neue Verarbeitungstaetigkeit dar und muss im VVT eingetragen werden." },
+      source:{ label:"DSGVO Art. 30; BfDI-Handreichung Kap. 7.1", text:"KI-Einsatz stellt in der Regel eine neue Verarbeitungstätigkeit dar und muss im VVT eingetragen werden." },
       options:[
-        { value:"ja",      label:"Ja -- bereits eingetragen oder in Bearbeitung" },
+        { value:"ja",      label:"Ja - bereits eingetragen oder in Bearbeitung" },
         { value:"geplant", label:"Noch nicht, aber geplant" },
         { value:"nein",    label:"Nein" },
         { value:"unklar",  label:"Ich kenne das VVT nicht" }
@@ -975,7 +975,7 @@ NAVIGATOR.modules.push({
 
     { id:"m5_offene_fragen", type:"textarea",
       label:"Welche datenschutzrechtlichen Fragen sind noch offen?",
-      hint:"z.B. Rechtsgrundlage unklar, DSFA aussteht, Drittlandtransfer ungeklaert",
+      hint:"z.B. Rechtsgrundlage unklar, DSFA aussteht, Drittlandtransfer ungeklärt",
       required:false, rows:4,
       output:{ label:"Offene Datenschutzfragen", section:"datenschutz" }
     }
@@ -988,9 +988,9 @@ NAVIGATOR.modules.push({
 // Quellen: Wiener KI-Kompass V2.0 (April 2024) / NACo AI County Compass (Juli 2024)
 // Struktur:
 //   6a  Grundverstaendnis & Erfahrung
-//   6b  Prompt-Qualitaet (typuebergreifend)
+//   6b  Prompt-Qualität (typuebergreifend)
 //   6c  Typspezifische Prompting-Praxis (showFor: use_case_typ)
-//   6d  Qualitaetssicherung & Grenzen
+//   6d  Qualitätssicherung & Grenzen
 //   6e  Organisationale Dimension
 
 NAVIGATOR.modules.push({
@@ -1001,7 +1001,7 @@ NAVIGATOR.modules.push({
   fields: [
 
     { id:"m6_intro", type:"info", content:[
-      "Wie du mit KI kommunizierst, entscheidet massgeblich ueber die Qualitaet der Ergebnisse.",
+      "Wie du mit KI kommunizierst, entscheidet maßgeblich über die Qualität der Ergebnisse.",
       "Dieses Modul hilft dir einzuschaetzen, wie bewusst und systematisch du bereits mit Prompts arbeitest."
     ]},
 
@@ -1009,57 +1009,57 @@ NAVIGATOR.modules.push({
     { id:"m6_s_a", type:"info", content:["<strong>A — Grundverstaendnis &amp; Erfahrung</strong>"]},
 
     { id:"m6_erfahrung_prompting", type:"select",
-      label:"Wie wuerden du deine bisherige Erfahrung mit Prompting beschreiben?",
-      hint:"Prompting = die Kunst, einer KI praezise Anweisungen zu geben.",
+      label:"Wie würden du deine bisherige Erfahrung mit Prompting beschreiben?",
+      hint:"Prompting = die Kunst, einer KI präzise Anweisungen zu geben.",
       required:false,
       options:[
-        { value:"keine",        label:"Keine -- ich kenne den Begriff kaum" },
-        { value:"intuitiv",     label:"Intuitiv -- ich probiere aus, ohne System" },
-        { value:"bewusst",      label:"Bewusst -- ich achte auf Formulierung und Kontext" },
-        { value:"systematisch", label:"Systematisch -- ich nutze feste Strukturen und teste gezielt" }
+        { value:"keine",        label:"Keine - ich kenne den Begriff kaum" },
+        { value:"intuitiv",     label:"Intuitiv - ich probiere aus, ohne System" },
+        { value:"bewusst",      label:"Bewusst - ich achte auf Formulierung und Kontext" },
+        { value:"systematisch", label:"Systematisch - ich nutze feste Strukturen und teste gezielt" }
       ],
       output:{ label:"Prompting-Erfahrung", section:"prompting" }
     },
 
     { id:"m6_hauptanwendung", type:"select",
-      label:"Wie setzt du Prompting in deinem Use Case hauptsaechlich ein?",
+      label:"Wie setzt du Prompting in deinem Use Case hauptsächlich ein?",
       required:false,
       options:[
-        { value:"einmalig",       label:"Einmalige Anweisung -- ein Prompt pro Aufgabe" },
-        { value:"gespraech",      label:"Im Dialog -- ich verfeinere durch Rueckfragen" },
-        { value:"templates",      label:"Mit Vorlagen -- ich nutze erprobte Prompt-Strukturen" },
-        { value:"system_prompt",  label:"Ueber System-Prompts -- grundlegende Verhaltensvorgaben fuer das Modell" },
+        { value:"einmalig",       label:"Einmalige Anweisung - ein Prompt pro Aufgabe" },
+        { value:"gespraech",      label:"Im Dialog - ich verfeinere durch Rueckfragen" },
+        { value:"templates",      label:"Mit Vorlagen - ich nutze erprobte Prompt-Strukturen" },
+        { value:"system_prompt",  label:"Über System-Prompts - grundlegende Verhaltensvorgaben für das Modell" },
         { value:"noch_unklar",    label:"Noch nicht entschieden" }
       ],
       output:{ label:"Prompting-Hauptanwendung", section:"prompting" }
     },
 
-    // 6b — Prompt-Qualitaet
-    { id:"m6_s_b", type:"info", content:["<strong>B — Prompt-Qualitaet</strong>"]},
+    // 6b — Prompt-Qualität
+    { id:"m6_s_b", type:"info", content:["<strong>B — Prompt-Qualität</strong>"]},
 
     { id:"m6_kontext", type:"select",
       label:"Gibst du der KI in deinen Prompts ausreichend Kontext?",
-      hint:"Kontext umfasst: Aufgabe, Zielgruppe, Rolle der KI, Ausgabeformat, Einschraenkungen.",
+      hint:"Kontext umfasst: Aufgabe, Zielgruppe, Rolle der KI, Ausgabeformat, Einschränkungen.",
       required:false,
-      source:{ label:"Wiener KI-Kompass V2.0, Kap. 4.2", text:"Der Wiener KI-Kompass empfiehlt, Prompts mit klarer Rollenanweisung, Aufgabenbeschreibung und Formatvorgabe zu strukturieren -- insbesondere fuer den behoerdlichen Einsatz." },
+      source:{ label:"Wiener KI-Kompass V2.0, Kap. 4.2", text:"Der Wiener KI-Kompass empfiehlt, Prompts mit klarer Rollenanweisung, Aufgabenbeschreibung und Formatvorgabe zu strukturieren - insbesondere für den behördlichen Einsatz." },
       options:[
-        { value:"kaum",          label:"Kaum -- ich formuliere kurze Anweisungen ohne Erklaerung" },
-        { value:"teilweise",     label:"Teilweise -- ich gebe manchmal Hintergrundinformationen" },
-        { value:"meistens",      label:"Meistens -- Kontext ist fuer mich Standard" },
-        { value:"systematisch",  label:"Systematisch -- ich nutze eine feste Prompt-Struktur mit allen Elementen" }
+        { value:"kaum",          label:"Kaum - ich formuliere kurze Anweisungen ohne Erklaerung" },
+        { value:"teilweise",     label:"Teilweise - ich gebe manchmal Hintergrundinformationen" },
+        { value:"meistens",      label:"Meistens - Kontext ist für mich Standard" },
+        { value:"systematisch",  label:"Systematisch - ich nutze eine feste Prompt-Struktur mit allen Elementen" }
       ],
-      output:{ label:"Kontextqualitaet in Prompts", section:"prompting" }
+      output:{ label:"Kontextqualität in Prompts", section:"prompting" }
     },
 
     { id:"m6_rolle_vorgabe", type:"select",
       label:"Weist du der KI eine Rolle oder Persona zu?",
       hint:"Beispiel: 'Du bist ein erfahrener Verwaltungsjurist...' oder 'Antworte als interner IT-Helpdesk...'",
       required:false,
-      source:{ label:"Wiener KI-Kompass V2.0, Kap. 4.3", text:"Rollenvorgaben verbessern die Relevanz und den Stil von KI-Ausgaben erheblich. Fuer behoerdliche Anwendungen empfiehlt sich eine Rolle, die Fachkompetenz und Verwaltungskontext vereint." },
+      source:{ label:"Wiener KI-Kompass V2.0, Kap. 4.3", text:"Rollenvorgaben verbessern die Relevanz und den Stil von KI-Ausgaben erheblich. Für behördliche Anwendungen empfiehlt sich eine Rolle, die Fachkompetenz und Verwaltungskontext vereint." },
       options:[
-        { value:"nie",       label:"Nein -- ich weise keine Rolle zu" },
-        { value:"manchmal",  label:"Manchmal -- bei bestimmten Aufgaben" },
-        { value:"immer",     label:"Ja -- Rollenvorgabe gehoert zu meinem Standard" }
+        { value:"nie",       label:"Nein - ich weise keine Rolle zu" },
+        { value:"manchmal",  label:"Manchmal - bei bestimmten Aufgaben" },
+        { value:"immer",     label:"Ja - Rollenvorgabe gehoert zu meinem Standard" }
       ],
       output:{ label:"Rollenvorgabe in Prompts", section:"prompting" }
     },
@@ -1069,9 +1069,9 @@ NAVIGATOR.modules.push({
       hint:"z.B. 'Antworte in 3 Stichpunkten', 'Erstelle eine Tabelle', 'Schreibe in Verwaltungssprache'",
       required:false,
       options:[
-        { value:"nie",       label:"Nein -- ich nehme, was kommt" },
-        { value:"manchmal",  label:"Manchmal -- bei komplexeren Aufgaben" },
-        { value:"immer",     label:"Ja -- Format-Vorgabe ist Standard fuer mich" }
+        { value:"nie",       label:"Nein - ich nehme, was kommt" },
+        { value:"manchmal",  label:"Manchmal - bei komplexeren Aufgaben" },
+        { value:"immer",     label:"Ja - Format-Vorgabe ist Standard für mich" }
       ],
       output:{ label:"Ausgabeformat-Vorgabe", section:"prompting" }
     },
@@ -1079,12 +1079,12 @@ NAVIGATOR.modules.push({
     { id:"m6_iteration", type:"select",
       label:"Wie gehst du vor, wenn das erste Ergebnis nicht passt?",
       required:false,
-      source:{ label:"NACo AI County Compass, S. 18", text:"Der NACo-Leitfaden betont: Iteratives Prompting ist eine Kernkompetenz -- gute Ergebnisse entstehen selten beim ersten Versuch. Mitarbeitende sollten gezielt Rueckfragen und Korrekturen trainieren." },
+      source:{ label:"NACo AI County Compass, S. 18", text:"Der NACo-Leitfaden betont: Iteratives Prompting ist eine Kernkompetenz - gute Ergebnisse entstehen selten beim ersten Versuch. Mitarbeitende sollten gezielt Rueckfragen und Korrekturen trainieren." },
       options:[
         { value:"abbrechen",   label:"Ich akzeptiere das Ergebnis oder breche ab" },
         { value:"neustarten",  label:"Ich starte neu mit einem anderen Prompt" },
-        { value:"verfeinern",  label:"Ich verfeinere den Prompt gezielt -- Schritt fuer Schritt" },
-        { value:"erklaeren",   label:"Ich erklaere der KI, was fehlt, und bitte um Ueberarbeitung" }
+        { value:"verfeinern",  label:"Ich verfeinere den Prompt gezielt - Schritt für Schritt" },
+        { value:"erklären",   label:"Ich erklaere der KI, was fehlt, und bitte um Ueberarbeitung" }
       ],
       output:{ label:"Umgang mit unpassenden Ergebnissen", section:"prompting" }
     },
@@ -1094,13 +1094,13 @@ NAVIGATOR.modules.push({
 
     { id:"m6_chatbot_systemprompt", type:"select",
       label:"Nutzt du einen System-Prompt, um das Verhalten des Chatbots grundlegend zu steuern?",
-      hint:"Der System-Prompt legt Persoenlichkeit, Grenzen und Aufgabe des Bots fest -- er ist unsichtbar fuer Nutzende.",
+      hint:"Der System-Prompt legt Persönlichkeit, Grenzen und Aufgabe des Bots fest - er ist unsichtbar für Nutzende.",
       required:false,
       showFor:{ var:"use_case_typ", values:["chatbot"] },
-      source:{ label:"Wiener KI-Kompass V2.0, Kap. 5.1", text:"Fuer behoerdliche Chatbots empfiehlt der Wiener KI-Kompass einen sorgfaeltig dokumentierten System-Prompt, der Datenschutzgrenzen, Eskalationspfade und den behördlichen Kontext definiert." },
+      source:{ label:"Wiener KI-Kompass V2.0, Kap. 5.1", text:"Für behördliche Chatbots empfiehlt der Wiener KI-Kompass einen sorgfältig dokumentierten System-Prompt, der Datenschutzgrenzen, Eskalationspfade und den behördlichen Kontext definiert." },
       options:[
-        { value:"ja_ausfuehrlich",  label:"Ja -- ausfuehrlicher, dokumentierter System-Prompt" },
-        { value:"ja_einfach",       label:"Ja -- einfache Grundanweisung" },
+        { value:"ja_ausfuehrlich",  label:"Ja - ausfuehrlicher, dokumentierter System-Prompt" },
+        { value:"ja_einfach",       label:"Ja - einfache Grundanweisung" },
         { value:"nein_geplant",     label:"Noch nicht, aber geplant" },
         { value:"nein",             label:"Nein" }
       ],
@@ -1108,20 +1108,20 @@ NAVIGATOR.modules.push({
     },
 
     { id:"m6_chatbot_eskalation", type:"select",
-      label:"Ist definiert, wann und wie der Chatbot an einen Menschen uebergibt?",
-      hint:"Eskalationspfade sind entscheidend fuer Nutzerzufriedenheit und rechtliche Absicherung.",
+      label:"Ist definiert, wann und wie der Chatbot an einen Menschen übergibt?",
+      hint:"Eskalationspfade sind entscheidend für Nutzerzufriedenheit und rechtliche Absicherung.",
       required:false,
       showFor:{ var:"use_case_typ", values:["chatbot"] },
       options:[
-        { value:"ja_klar",    label:"Ja -- klare Regeln fuer Eskalation definiert" },
-        { value:"teilweise",  label:"Teilweise -- einige Faelle geregelt" },
+        { value:"ja_klar",    label:"Ja - klare Regeln für Eskalation definiert" },
+        { value:"teilweise",  label:"Teilweise - einige Faelle geregelt" },
         { value:"nein",       label:"Noch nicht definiert" }
       ],
       output:{ label:"Eskalationspfad (Chatbot)", section:"prompting" }
     },
 
     { id:"m6_dokument_extraktion", type:"textarea",
-      label:"Wie formulierst du Extraktions- oder Klassifikationsanweisungen fuer Dokumente?",
+      label:"Wie formulierst du Extraktions- oder Klassifikationsanweisungen für Dokumente?",
       hint:"z.B. 'Extrahiere Datum, Aktenzeichen und Betreff aus diesem Schreiben. Antworte nur mit diesen drei Feldern als JSON.'",
       required:false,
       showFor:{ var:"use_case_typ", values:["dokument"] },
@@ -1131,10 +1131,10 @@ NAVIGATOR.modules.push({
 
     { id:"m6_recherche_quellenkritik", type:"select",
       label:"Wie gehst du mit der Quellenbehauptung von KI-Rechercheergebnissen um?",
-      hint:"KI kann Quellen erfindem (Halluzinationen) -- besonders bei unbekannten Dokumenten.",
+      hint:"KI kann Quellen erfindem (Halluzinationen) - besonders bei unbekannten Dokumenten.",
       required:false,
       showFor:{ var:"use_case_typ", values:["recherche"] },
-      source:{ label:"NACo AI County Compass, S. 22", text:"Der NACo-Leitfaden warnt ausdruecklich vor unkritischer Uebernahme von KI-Rechercheergebnissen. Factchecking und Quellenverifikation muessen in den Prozess eingebaut sein." },
+      source:{ label:"NACo AI County Compass, S. 22", text:"Der NACo-Leitfaden warnt ausdrücklich vor unkritischer Übernahme von KI-Rechercheergebnissen. Factchecking und Quellenverifikation müssen in den Prozess eingebaut sein." },
       options:[
         { value:"verifiziere_immer",   label:"Ich verifiziere Quellen immer manuell" },
         { value:"verifiziere_wichtig", label:"Ich verifiziere bei wichtigen Entscheidungen" },
@@ -1145,13 +1145,13 @@ NAVIGATOR.modules.push({
     },
 
     { id:"m6_text_tonalitaet", type:"select",
-      label:"Wie steuerst du Tonalitaet und Stil bei KI-Texten fuer die Verwaltung?",
+      label:"Wie steuerst du Tonalität und Stil bei KI-Texten für die Verwaltung?",
       hint:"Verwaltungssprache hat spezifische Anforderungen: Sachlichkeit, Rechtskonformitaet, Barrierefreiheit.",
       required:false,
       showFor:{ var:"use_case_typ", values:["texterstellung"] },
       options:[
-        { value:"explizit",   label:"Explizit im Prompt -- Stil und Zielgruppe immer angegeben" },
-        { value:"nachkorrektur", label:"Per Nachkorrektur -- KI erstellt, Mensch passt an" },
+        { value:"explizit",   label:"Explizit im Prompt - Stil und Zielgruppe immer angegeben" },
+        { value:"nachkorrektur", label:"Per Nachkorrektur - KI erstellt, Mensch passt an" },
         { value:"noch_offen", label:"Noch nicht systematisch geloest" }
       ],
       output:{ label:"Stil-Steuerung bei Texterstellung", section:"prompting" }
@@ -1163,36 +1163,36 @@ NAVIGATOR.modules.push({
       required:false,
       showFor:{ var:"use_case_typ", values:["crm_analyse"] },
       options:[
-        { value:"strukturiert",  label:"Strukturiert -- Tabelle, JSON oder CSV vorgegeben" },
-        { value:"freitext",      label:"Freitext -- ich verarbeite den Text manuell weiter" },
-        { value:"gemischt",      label:"Gemischt -- je nach Aufgabe" }
+        { value:"strukturiert",  label:"Strukturiert - Tabelle, JSON oder CSV vorgegeben" },
+        { value:"freitext",      label:"Freitext - ich verarbeite den Text manuell weiter" },
+        { value:"gemischt",      label:"Gemischt - je nach Aufgabe" }
       ],
       output:{ label:"Ausgabeformat CRM/Analyse", section:"prompting" }
     },
 
-    // 6d — Qualitaetssicherung & Grenzen
-    { id:"m6_s_d", type:"info", content:["<strong>D — Qualitaetssicherung &amp; Grenzen</strong>"]},
+    // 6d — Qualitätssicherung & Grenzen
+    { id:"m6_s_d", type:"info", content:["<strong>D — Qualitätssicherung &amp; Grenzen</strong>"]},
 
     { id:"m6_halluzinationen", type:"select",
-      label:"Weisst du, was KI-Halluzinationen sind -- und wie du sie erkennst?",
+      label:"Weisst du, was KI-Halluzinationen sind - und wie du sie erkennst?",
       required:false,
-      source:{ label:"NACo AI County Compass, S. 14; Wiener KI-Kompass V2.0, Kap. 3.4", text:"Beide Leitfaeden betonen: Halluzinationen (plausibelklingende, aber falsche Ausgaben) sind ein Kernrisiko generativer KI. Mitarbeitende muessen gezielt geschult werden, Ausgaben zu hinterfragen." },
+      source:{ label:"NACo AI County Compass, S. 14; Wiener KI-Kompass V2.0, Kap. 3.4", text:"Beide Leitfäden betonen: Halluzinationen (plausibelklingende, aber falsche Ausgaben) sind ein Kernrisiko generativer KI. Mitarbeitende müssen gezielt geschult werden, Ausgaben zu hinterfragen." },
       options:[
-        { value:"ja_erkenne",    label:"Ja -- ich kenne das Phaenomen und erkenne es oft" },
+        { value:"ja_erkenne",    label:"Ja - ich kenne das Phaenomen und erkenne es oft" },
         { value:"ja_weiss",      label:"Ich kenne den Begriff, bin aber unsicher beim Erkennen" },
-        { value:"kaum",          label:"Kaum -- das ist ein neues Thema fuer mich" }
+        { value:"kaum",          label:"Kaum - das ist ein neues Thema für mich" }
       ],
       output:{ label:"Halluzinationen bekannt", section:"prompting" }
     },
 
     { id:"m6_daten_in_prompts", type:"select",
       label:"Wie gehst du mit personenbezogenen oder behordseninternen Daten in Prompts um?",
-      hint:"Daten, die in Prompts eingegeben werden, koennen beim Anbieter gespeichert oder fuer Training genutzt werden.",
+      hint:"Daten, die in Prompts eingegeben werden, können beim Anbieter gespeichert oder für Training genutzt werden.",
       required:false,
-      source:{ label:"BfDI-Handreichung Kap. 5.3; Wiener KI-Kompass V2.0, Kap. 6.1", text:"BfDI und Wiener KI-Kompass warnen ausdruecklich vor dem unkritischen Einsatz personenbezogener Daten in Prompts. Anonymisierung oder Pseudonymisierung vor der Eingabe wird empfohlen." },
+      source:{ label:"BfDI-Handreichung Kap. 5.3; Wiener KI-Kompass V2.0, Kap. 6.1", text:"BfDI und Wiener KI-Kompass warnen ausdrücklich vor dem unkritischen Einsatz personenbezogener Daten in Prompts. Anonymisierung oder Pseudonymisierung vor der Eingabe wird empfohlen." },
       options:[
         { value:"anonymisiere",   label:"Ich anonymisiere oder pseudonymisiere Daten vor der Eingabe" },
-        { value:"keine_pb",       label:"Mein Use Case enthaelt keine personenbezogenen Daten" },
+        { value:"keine_pb",       label:"Mein Use Case enthält keine personenbezogenen Daten" },
         { value:"bewusst_abwaege", label:"Ich waege im Einzelfall ab" },
         { value:"noch_kein_prozess", label:"Kein etablierter Prozess bisher" }
       ],
@@ -1201,7 +1201,7 @@ NAVIGATOR.modules.push({
 
     { id:"m6_grenzen", type:"multiselect",
       label:"Welche Grenzen von KI-Prompting hast du bereits erlebt oder identifiziert?",
-      hint:"Ehrliche Einschaetzung -- erleichtert die spaetere Einordnung im Steckbrief.",
+      hint:"Ehrliche Einschätzung - erleichtert die spätere Einordnung im Steckbrief.",
       required:false,
       options:[
         { value:"halluzinationen",    label:"Halluzinationen / falsche Fakten" },
@@ -1219,23 +1219,23 @@ NAVIGATOR.modules.push({
     { id:"m6_s_e", type:"info", content:["<strong>E — Organisationale Dimension</strong>"]},
 
     { id:"m6_prompt_bibliothek", type:"select",
-      label:"Gibt es in deinem Team oder deiner Behoerde gemeinsame Prompt-Vorlagen oder -Standards?",
+      label:"Gibt es in deinem Team oder deiner Behörde gemeinsame Prompt-Vorlagen oder -Standards?",
       required:false,
-      source:{ label:"NACo AI County Compass, S. 26; Wiener KI-Kompass V2.0, Kap. 7", text:"Beide Leitfaeden empfehlen den Aufbau gemeinsamer Prompt-Bibliotheken als Organisationswissen -- insbesondere um Qualitaet zu sichern und Einstiegshuerde fuer neue Mitarbeitende zu senken." },
+      source:{ label:"NACo AI County Compass, S. 26; Wiener KI-Kompass V2.0, Kap. 7", text:"Beide Leitfäden empfehlen den Aufbau gemeinsamer Prompt-Bibliotheken als Organisationswissen - insbesondere um Qualität zu sichern und Einstiegshürde für neue Mitarbeitende zu senken." },
       options:[
-        { value:"ja_vorhanden",  label:"Ja -- wir haben geteilte Vorlagen oder eine Bibliothek" },
-        { value:"informell",     label:"Informell -- einzelne Kolleginnen teilen Prompts gelegentlich" },
+        { value:"ja_vorhanden",  label:"Ja - wir haben geteilte Vorlagen oder eine Bibliothek" },
+        { value:"informell",     label:"Informell - einzelne Kolleginnen teilen Prompts gelegentlich" },
         { value:"geplant",       label:"Noch nicht, aber wir planen es" },
-        { value:"nein",          label:"Nein -- jede Person prompts individuell" }
+        { value:"nein",          label:"Nein - jede Person prompts individuell" }
       ],
       output:{ label:"Organisationale Prompt-Bibliothek", section:"prompting" }
     },
 
     { id:"m6_schulung", type:"select",
-      label:"Gibt es Schulungs- oder Weiterbildungsangebote zu Prompting in deiner Behoerde?",
+      label:"Gibt es Schulungs- oder Weiterbildungsangebote zu Prompting in deiner Behörde?",
       required:false,
       options:[
-        { value:"ja",       label:"Ja -- Schulungen vorhanden" },
+        { value:"ja",       label:"Ja - Schulungen vorhanden" },
         { value:"geplant",  label:"Geplant" },
         { value:"nein",     label:"Nein" },
         { value:"unklar",   label:"Mir nicht bekannt" }
@@ -1244,8 +1244,8 @@ NAVIGATOR.modules.push({
     },
 
     { id:"m6_beispiel_prompt", type:"textarea",
-      label:"Schreibe einen typischen Prompt, den du fuer deinen Use Case nutzen wuerdest",
-      hint:"Kein perfektes Ergebnis erwartet -- diese Eingabe hilft dir spaeter bei der Selbstbewertung.",
+      label:"Schreibe einen typischen Prompt, den du für deinen Use Case nutzen würdest",
+      hint:"Kein perfektes Ergebnis erwartet - diese Eingabe hilft dir später bei der Selbstbewertung.",
       required:false,
       rows:5,
       output:{ label:"Beispiel-Prompt", section:"prompting" }
@@ -1262,16 +1262,16 @@ NAVIGATOR.modules.push({
 // nicht als Selbsteinstufung am Anfang, sondern als Schlussfolgerung aus gezielten Fragen.
 //
 // Struktur:
-//   7a  Konzeptuelle Einfuehrung (Info)
+//   7a  Konzeptuelle Einführung (Info)
 //   7b  Reflexion: Ausgangspunkt und Absicht
 //   7c  Reflexion: Organisationaler Wandel
 //   7d  Reflexion: Rollen und Entscheidungsstrukturen
 //   7e  Einordnung (emergente Kategorisierung)
-//   7f  Implikationen und naechste Schritte
+//   7f  Implikationen und nächste Schritte
 //
 // Quellen:
 //   [WIK]      WIK-Studie, Dez. 2024, Kap. 4 (Organisationsveraenderung durch KI)
-//   [McKinsey] McKinsey: Generative KI in der oeffentlichen Verwaltung, 2024
+//   [McKinsey] McKinsey: Generative KI in der öffentlichen Verwaltung, 2024
 //   [KI-Kompass] Wiener KI-Kompass V2.0, Kap. 8 (Strategische Dimension)
 
 NAVIGATOR.modules.push({
@@ -1281,11 +1281,11 @@ NAVIGATOR.modules.push({
   progressLabel: "Einordnung",
   fields: [
 
-    // 7a — Konzeptuelle Einfuehrung
+    // 7a — Konzeptuelle Einführung
     { id:"m7_intro", type:"info", content:[
-      "KI kann auf zwei grundlegend verschiedene Weisen eingesetzt werden -- mit sehr unterschiedlichen Konsequenzen.",
-      "<strong>KI als Applikation:</strong> Ein bestehender Prozess wird effizienter, schneller oder guenstiger. Die grundlegende Logik des Prozesses bleibt erhalten.",
-      "<strong>KI als Transformationsanlass:</strong> Der KI-Einsatz wird zum Katalysator, um Prozesse, Rollen oder Strukturen grundlegend neu zu denken. Die Frage ist nicht mehr 'Wie machen wir es besser?' -- sondern 'Warum machen wir es ueberhaupt so?'",
+      "KI kann auf zwei grundlegend verschiedene Weisen eingesetzt werden - mit sehr unterschiedlichen Konsequenzen.",
+      "<strong>KI als Applikation:</strong> Ein bestehender Prozess wird effizienter, schneller oder günstiger. Die grundlegende Logik des Prozesses bleibt erhalten.",
+      "<strong>KI als Transformationsanlass:</strong> Der KI-Einsatz wird zum Katalysator, um Prozesse, Rollen oder Strukturen grundlegend neu zu denken. Die Frage ist nicht mehr 'Wie machen wir es besser?' - sondern 'Warum machen wir es überhaupt so?'",
       "Die folgenden Fragen helfen dir, deinen Use Case reflektiert einzuordnen."
     ]},
 
@@ -1297,32 +1297,32 @@ NAVIGATOR.modules.push({
       hint:"Die Antwort gibt einen ersten Hinweis auf die Tiefe des beabsichtigten Wandels.",
       required:false,
       options:[
-        { value:"prozessprob",      label:"Ein konkretes Prozessprobleml -- etwas dauert zu lang, kostet zu viel, macht Fehler" },
-        { value:"ki_moeglichkeit",  label:"Eine KI-Moeglichkeit -- ich habe ein Tool gesehen und gefragt: Wo koennen wir das einsetzen?" },
-        { value:"strategie",        label:"Eine strategische Entscheidung -- die Behoerde will sich grundlegend veraendern" },
-        { value:"druck",            label:"Externer Druck -- politischer Auftrag, Foerderprogramm, Erwartung von aussen" },
+        { value:"prozessprob",      label:"Ein konkretes Prozessprobleml - etwas dauert zu lang, kostet zu viel, macht Fehler" },
+        { value:"ki_möglichkeit",  label:"Eine KI-Möglichkeit - ich habe ein Tool gesehen und gefragt: Wo können wir das einsetzen?" },
+        { value:"strategie",        label:"Eine strategische Entscheidung - die Behörde will sich grundlegend verändern" },
+        { value:"druck",            label:"Externer Druck - politischer Auftrag, Foerderprogramm, Erwartung von aussen" },
         { value:"kombination",      label:"Eine Kombination aus mehreren der obigen" }
       ],
       output:{ label:"Ausgangspunkt des Use Cases", section:"einordnung" }
     },
 
     { id:"m7_absicht", type:"select",
-      label:"Was ist deine primaere Absicht mit dem Use Case?",
+      label:"Was ist deine primäre Absicht mit dem Use Case?",
       required:false,
-      source:{ label:"WIK-Studie, Kap. 4.1", text:"Die WIK-Studie unterscheidet zwischen Effizienzorientierung (Applikationsmodus) und Wirkungsorientierung (Transformationsmodus). Beide sind legitim -- entscheidend ist die Bewusstheit ueber den Modus." },
+      source:{ label:"WIK-Studie, Kap. 4.1", text:"Die WIK-Studie unterscheidet zwischen Effizienzorientierung (Applikationsmodus) und Wirkungsorientierung (Transformationsmodus). Beide sind legitim - entscheidend ist die Bewusstheit über den Modus." },
       options:[
-        { value:"effizienz",        label:"Effizienz -- denselben Prozess schneller, guenstiger oder fehlerfreier machen" },
-        { value:"qualitaet",        label:"Qualitaet -- bessere Ergebnisse innerhalb des bestehenden Rahmens" },
-        { value:"neues_angebot",    label:"Neues Angebot -- etwas ermoeglicht, was bisher nicht moeglich war" },
-        { value:"neugestaltung",    label:"Neugestaltung -- den Prozess oder die Aufgabe grundlegend anders denken" },
-        { value:"noch_offen",       label:"Noch offen -- ich habe das noch nicht scharf formuliert" }
+        { value:"effizienz",        label:"Effizienz - denselben Prozess schneller, günstiger oder fehlerfreier machen" },
+        { value:"qualität",        label:"Qualität - bessere Ergebnisse innerhalb des bestehenden Rahmens" },
+        { value:"neues_angebot",    label:"Neues Angebot - etwas ermöglicht, was bisher nicht möglich war" },
+        { value:"neugestaltung",    label:"Neugestaltung - den Prozess oder die Aufgabe grundlegend anders denken" },
+        { value:"noch_offen",       label:"Noch offen - ich habe das noch nicht scharf formuliert" }
       ],
       output:{ label:"Primaere Absicht", section:"einordnung" }
     },
 
     { id:"m7_erfolg_definition", type:"textarea",
-      label:"Woran wuerdest du erkennen, dass dein Use Case erfolgreich ist?",
-      hint:"Beschreibe einen konkreten Zustand -- nicht Kennzahlen, sondern was sich wie veraendert hat.",
+      label:"Woran würdest du erkennen, dass dein Use Case erfolgreich ist?",
+      hint:"Beschreibe einen konkreten Zustand - nicht Kennzahlen, sondern was sich wie verändert hat.",
       required:false,
       rows:4,
       output:{ label:"Erfolgsdefinition", section:"einordnung" }
@@ -1332,13 +1332,13 @@ NAVIGATOR.modules.push({
     { id:"m7_s_c", type:"info", content:["<strong>B — Organisationaler Wandel</strong>"]},
 
     { id:"m7_prozess_veraenderung", type:"select",
-      label:"Veraendert der Use Case den zugrunde liegenden Prozess?",
+      label:"Verändert der Use Case den zugrunde liegenden Prozess?",
       required:false,
-      source:{ label:"WIK-Studie, Kap. 4.2; McKinsey 2024, S. 8", text:"McKinsey und WIK betonen: Der groesste Hebel generativer KI liegt nicht in der Automatisierung bestehender Prozesse, sondern in der Neudefinition von Aufgaben und Wertschoepfungsketten. Kommunen, die KI rein als Effizienzwerkzeug einsetzen, schoepfen nur einen Bruchteil des Potenzials aus." },
+      source:{ label:"WIK-Studie, Kap. 4.2; McKinsey 2024, S. 8", text:"McKinsey und WIK betonen: Der größte Hebel generativer KI liegt nicht in der Automatisierung bestehender Prozesse, sondern in der Neudefinition von Aufgaben und Wertschöpfungsketten. Kommunen, die KI rein als Effizienzwerkzeug einsetzen, schöpfen nur einen Bruchteil des Potenzials aus." },
       options:[
-        { value:"nein_gleich",     label:"Nein -- der Prozess bleibt im Wesentlichen gleich, KI macht ihn schneller" },
-        { value:"teilweise",       label:"Teilweise -- einige Schritte entfallen oder aendern sich, die Grundlogik bleibt" },
-        { value:"grundlegend",     label:"Grundlegend -- der Prozess wird neu gestaltet" },
+        { value:"nein_gleich",     label:"Nein - der Prozess bleibt im Wesentlichen gleich, KI macht ihn schneller" },
+        { value:"teilweise",       label:"Teilweise - einige Schritte entfallen oder aendern sich, die Grundlogik bleibt" },
+        { value:"grundlegend",     label:"Grundlegend - der Prozess wird neu gestaltet" },
         { value:"noch_unklar",     label:"Das ist noch nicht entschieden" }
       ],
       output:{ label:"Ausmass der Prozessveraenderung", section:"einordnung" }
@@ -1348,23 +1348,23 @@ NAVIGATOR.modules.push({
       label:"Bleibt die Wirkung des Use Cases auf deinen Fachbereich begrenzt?",
       required:false,
       options:[
-        { value:"ja_begrenzt",      label:"Ja -- nur ein Bereich oder ein Prozess ist betroffen" },
-        { value:"mehrere_bereiche", label:"Nein -- mehrere Aemter oder Abteilungen sind betroffen oder muessen eingebunden werden" },
-        { value:"gesamtorganisation", label:"Nein -- der Use Case hat Implikationen fuer die gesamte Behoerde" },
-        { value:"unklar",           label:"Noch nicht eingeschaetzt" }
+        { value:"ja_begrenzt",      label:"Ja - nur ein Bereich oder ein Prozess ist betroffen" },
+        { value:"mehrere_bereiche", label:"Nein - mehrere Ämter oder Abteilungen sind betroffen oder müssen eingebunden werden" },
+        { value:"gesamtorganisation", label:"Nein - der Use Case hat Implikationen für die gesamte Behörde" },
+        { value:"unklar",           label:"Noch nicht eingeschätzt" }
       ],
       output:{ label:"Organisationale Reichweite", section:"einordnung" }
     },
 
     { id:"m7_lerneffekt", type:"select",
-      label:"Entstehen durch den Use Case organisationale Lerneffekte, die ueber den Use Case hinausgehen?",
-      hint:"z.B. neue Kompetenzen, neue Arbeitsweisen, neues Verstaendnis von Buergerkontakt oder Wissensarbeit.",
+      label:"Entstehen durch den Use Case organisationale Lerneffekte, die über den Use Case hinausgehen?",
+      hint:"z.B. neue Kompetenzen, neue Arbeitsweisen, neues Verständnis von Bürgerkontakt oder Wissensarbeit.",
       required:false,
-      source:{ label:"Wiener KI-Kompass V2.0, Kap. 8.3", text:"Der Wiener KI-Kompass bezeichnet diesen Effekt als 'organisationale KI-Reife' -- die Faehigkeit einer Behoerde, aus KI-Projekten zu lernen und diese Erkenntnisse zu transferieren. Transformative Use Cases beschleunigen diese Reife." },
+      source:{ label:"Wiener KI-Kompass V2.0, Kap. 8.3", text:"Der Wiener KI-Kompass bezeichnet diesen Effekt als 'organisationale KI-Reife' - die Fähigkeit einer Behörde, aus KI-Projekten zu lernen und diese Erkenntnisse zu transferieren. Transformative Use Cases beschleunigen diese Reife." },
       options:[
-        { value:"kaum",       label:"Kaum -- der Use Case ist relativ abgeschlossen" },
-        { value:"moeglich",   label:"Moeglich -- es gibt potenzielle Transfereffekte" },
-        { value:"bewusst",    label:"Bewusst geplant -- Lernen und Transfer ist Teil des Vorhabens" }
+        { value:"kaum",       label:"Kaum - der Use Case ist relativ abgeschlossen" },
+        { value:"möglich",   label:"Moeglich - es gibt potenzielle Transfereffekte" },
+        { value:"bewusst",    label:"Bewusst geplant - Lernen und Transfer ist Teil des Vorhabens" }
       ],
       output:{ label:"Organisationale Lerneffekte", section:"einordnung" }
     },
@@ -1375,67 +1375,67 @@ NAVIGATOR.modules.push({
     { id:"m7_rollen_veraenderung", type:"select",
       label:"Veraendern sich durch den Use Case Rollen oder Aufgaben von Mitarbeitenden?",
       required:false,
-      source:{ label:"WIK-Studie, Kap. 5; McKinsey 2024, S. 12", text:"WIK und McKinsey zeigen: KI-Einfuehrung in der Verwaltung veraendert immer auch Taetigkeitsprofile -- auch wenn das nicht immer explizit geplant ist. Proaktives Rollendesign ist ein Merkmal transformativer Vorhaben." },
+      source:{ label:"WIK-Studie, Kap. 5; McKinsey 2024, S. 12", text:"WIK und McKinsey zeigen: KI-Einführung in der Verwaltung verändert immer auch Tätigkeitsprofile - auch wenn das nicht immer explizit geplant ist. Proaktives Rollendesign ist ein Merkmal transformativer Vorhaben." },
       options:[
-        { value:"nein",           label:"Nein -- Aufgaben und Rollen bleiben gleich, KI unterstuetzt nur" },
-        { value:"teilweise",      label:"Teilweise -- einige Routineaufgaben entfallen, Fokus verschiebt sich" },
-        { value:"grundlegend",    label:"Grundlegend -- Rolle oder Berufsprofilveraendern sich" },
-        { value:"noch_ungeklaert", label:"Noch nicht diskutiert" }
+        { value:"nein",           label:"Nein - Aufgaben und Rollen bleiben gleich, KI unterstützt nur" },
+        { value:"teilweise",      label:"Teilweise - einige Routineaufgaben entfallen, Fokus verschiebt sich" },
+        { value:"grundlegend",    label:"Grundlegend - Rolle oder Berufsprofilverändern sich" },
+        { value:"noch_ungeklärt", label:"Noch nicht diskutiert" }
       ],
-      output:{ label:"Veraenderung von Rollen", section:"einordnung" }
+      output:{ label:"Veränderung von Rollen", section:"einordnung" }
     },
 
     { id:"m7_personalrat", type:"select",
-      label:"Wurde oder wird der Personalrat in die Einfuehrung einbezogen?",
-      hint:"Pflicht nach Mitbestimmungsrecht, wenn sich Arbeitsplaetze oder Leistungserfassung veraendern.",
+      label:"Wurde oder wird der Personalrat in die Einführung einbezogen?",
+      hint:"Pflicht nach Mitbestimmungsrecht, wenn sich Arbeitsplätze oder Leistungserfassung verändern.",
       required:false,
       options:[
-        { value:"ja",           label:"Ja -- einbezogen oder Einbeziehung geplant" },
-        { value:"nicht_noetig", label:"Nicht erforderlich -- keine Auswirkung auf Arbeitsbedingungen" },
-        { value:"noch_nicht",   label:"Noch nicht, aber muss geprueft werden" },
+        { value:"ja",           label:"Ja - einbezogen oder Einbeziehung geplant" },
+        { value:"nicht_noetig", label:"Nicht erforderlich - keine Auswirkung auf Arbeitsbedingungen" },
+        { value:"noch_nicht",   label:"Noch nicht, aber muss geprüft werden" },
         { value:"unklar",       label:"Ich bin unsicher, ob das relevant ist" }
       ],
       output:{ label:"Personalrat einbezogen", section:"einordnung" }
     },
 
     { id:"m7_entscheidungstiefe", type:"select",
-      label:"Beruehrt der Use Case die Art, wie Entscheidungen in deiner Behoerde getroffen werden?",
+      label:"Berührt der Use Case die Art, wie Entscheidungen in deiner Behörde getroffen werden?",
       hint:"Nicht nur: Wer entscheidet? Sondern auch: Auf welcher Grundlage? Mit welcher Geschwindigkeit? Mit welcher Nachvollziehbarkeit?",
       required:false,
-      source:{ label:"McKinsey 2024, S. 15; Wiener KI-Kompass V2.0, Kap. 8.1", text:"Beide Quellen betonen: Wenn KI in Entscheidungsprozesse eingreift, entsteht ein Governance-Bedarf, der weit ueber die technische Einfuehrung hinausgeht. Das ist ein typisches Merkmal des Transformationsmodus." },
+      source:{ label:"McKinsey 2024, S. 15; Wiener KI-Kompass V2.0, Kap. 8.1", text:"Beide Quellen betonen: Wenn KI in Entscheidungsprozesse eingreift, entsteht ein Governance-Bedarf, der weit über die technische Einführung hinausgeht. Das ist ein typisches Merkmal des Transformationsmodus." },
       options:[
-        { value:"nein",          label:"Nein -- Entscheidungsstruktur bleibt unveraendert" },
-        { value:"unterstuetzend", label:"Unterstuetzend -- KI gibt Hinweise, Menschen entscheiden wie bisher" },
-        { value:"beschleunigend", label:"Beschleunigend -- Entscheidungen koennen schneller getroffen werden" },
-        { value:"veraendernd",    label:"Veraendernd -- die Grundlage oder Logik von Entscheidungen veraendert sich" }
+        { value:"nein",          label:"Nein - Entscheidungsstruktur bleibt unverändert" },
+        { value:"unterstuetzend", label:"Unterstuetzend - KI gibt Hinweise, Menschen entscheiden wie bisher" },
+        { value:"beschleunigend", label:"Beschleunigend - Entscheidungen können schneller getroffen werden" },
+        { value:"verändernd",    label:"Veraendernd - die Grundlage oder Logik von Entscheidungen verändert sich" }
       ],
       output:{ label:"Wirkung auf Entscheidungsstrukturen", section:"einordnung" }
     },
 
     // 7e — Emergente Kategorisierung
     { id:"m7_s_e", type:"info", content:["<strong>D — Einordnung</strong>",
-      "Auf Basis deiner Antworten: Wie wuerdest du deinen Use Case einordnen?"
+      "Auf Basis deiner Antworten: Wie würdest du deinen Use Case einordnen?"
     ]},
 
     { id:"m7_einordnung", type:"select",
-      label:"KI als Applikation oder KI als Transformationsanlass -- oder beides?",
-      hint:"Es gibt keine richtige Antwort. Beide Einordnungen sind wertvoll -- entscheidend ist die Bewusstheit.",
+      label:"KI als Applikation oder KI als Transformationsanlass - oder beides?",
+      hint:"Es gibt keine richtige Antwort. Beide Einordnungen sind wertvoll - entscheidend ist die Bewusstheit.",
       required:false,
       options:[
-        { value:"applikation",       label:"KI als Applikation -- gezieltes Werkzeug fuer einen klar umrissenen Prozess" },
-        { value:"transformation",    label:"KI als Transformationsanlass -- Katalysator fuer tiefergehenden Wandel" },
-        { value:"beides",            label:"Beides -- der Use Case ist Applikation und hat transformatives Potenzial" },
-        { value:"noch_unklar",       label:"Ich bin noch unsicher -- die Fragen haben neue Unklarheiten aufgeworfen" }
+        { value:"applikation",       label:"KI als Applikation - gezieltes Werkzeug für einen klar umrissenen Prozess" },
+        { value:"transformation",    label:"KI als Transformationsanlass - Katalysator für tiefergehenden Wandel" },
+        { value:"beides",            label:"Beides - der Use Case ist Applikation und hat transformatives Potenzial" },
+        { value:"noch_unklar",       label:"Ich bin noch unsicher - die Fragen haben neue Unklarheiten aufgeworfen" }
       ],
       output:{ label:"Einordnung: Applikation vs. Transformationsanlass", section:"einordnung" }
     },
 
     { id:"m7_einordnung_begruendung", type:"textarea",
-      label:"Warum hast du diese Einordnung gewaehlt?",
-      hint:"Eine oder zwei Saetze genuegen -- diese Begruendung erscheint im Steckbrief.",
+      label:"Warum hast du diese Einordnung gewählt?",
+      hint:"Eine oder zwei Sätze genügen - diese Begründung erscheint im Steckbrief.",
       required:false,
       rows:4,
-      output:{ label:"Begruendung der Einordnung", section:"einordnung" }
+      output:{ label:"Begründung der Einordnung", section:"einordnung" }
     },
 
     // 7f — Implikationen
@@ -1444,36 +1444,36 @@ NAVIGATOR.modules.push({
     { id:"m7_implikation_applikation", type:"info",
       showWhen:{ field:"m7_einordnung", value:"applikation" },
       content:[
-        "<strong>Implikationen fuer den Applikationsmodus:</strong>",
-        "Der Fokus liegt auf Qualitaet der Implementierung: Datenschutz, Eignungspruefung, sauberes Prompting und ein klarer Rollout-Plan sind die zentralen Erfolgsfaktoren.",
-        "Risiko: Die Logik eines suboptimalen Prozesses wird durch KI zementiert statt verbessert. Pruefe, ob der Prozess selbst sinnvoll ist -- bevor KI ihn beschleunigt."
+        "<strong>Implikationen für den Applikationsmodus:</strong>",
+        "Der Fokus liegt auf Qualität der Implementierung: Datenschutz, Eignungsprüfung, sauberes Prompting und ein klarer Rollout-Plan sind die zentralen Erfolgsfaktoren.",
+        "Risiko: Die Logik eines suboptimalen Prozesses wird durch KI zementiert statt verbessert. Prüfe, ob der Prozess selbst sinnvoll ist - bevor KI ihn beschleunigt."
       ]
     },
 
     { id:"m7_implikation_transformation", type:"info",
       showWhen:{ field:"m7_einordnung", value:"transformation" },
       content:[
-        "<strong>Implikationen fuer den Transformationsmodus:</strong>",
-        "Der Fokus liegt auf Change Management, Stakeholder-Einbindung und organisationalem Lernen. Technische Qualitaet ist notwendig, aber nicht hinreichend.",
-        "Empfehlung: Bringe Fuehrung, Personalrat und betroffene Mitarbeitende fruehzeitig ein. Plane explizit Zeit fuer Reflexion und Kurskorrektur ein."
+        "<strong>Implikationen für den Transformationsmodus:</strong>",
+        "Der Fokus liegt auf Change Management, Stakeholder-Einbindung und organisationalem Lernen. Technische Qualität ist notwendig, aber nicht hinreichend.",
+        "Empfehlung: Bringe Führung, Personalrat und betroffene Mitarbeitende frühzeitig ein. Plane explizit Zeit für Reflexion und Kurskorrektur ein."
       ]
     },
 
     { id:"m7_implikation_beides", type:"info",
       showWhen:{ field:"m7_einordnung", value:"beides" },
       content:[
-        "<strong>Implikationen fuer den kombinierten Modus:</strong>",
-        "Du hast einen besonders anspruchsvollen Pfad gewaehlt -- oder bist auf ihn gestossen. Die Applikation muss solide umgesetzt werden, gleichzeitig braucht die transformative Dimension bewusste Steuerung.",
+        "<strong>Implikationen für den kombinierten Modus:</strong>",
+        "Du hast einen besonders anspruchsvollen Pfad gewählt - oder bist auf ihn gestossen. Die Applikation muss solide umgesetzt werden, gleichzeitig braucht die transformative Dimension bewusste Steuerung.",
         "Empfehlung: Trenne konzeptionell beide Dimensionen. Halte die Applikation pragmatisch und messbar. Gestalte die Transformation mit explizitem Beteiligungsprozess."
       ]
     },
 
-    { id:"m7_naechste_schritte", type:"textarea",
-      label:"Was ist dein naechster konkreter Schritt fuer diesen Use Case?",
-      hint:"Ein Satz -- moeglichst spezifisch: Was, bis wann, mit wem?",
+    { id:"m7_nächste_schritte", type:"textarea",
+      label:"Was ist dein nächster konkreter Schritt für diesen Use Case?",
+      hint:"Ein Satz - möglichst spezifisch: Was, bis wann, mit wem?",
       required:false,
       rows:3,
-      output:{ label:"Naechster konkreter Schritt", section:"einordnung" }
+      output:{ label:"Nächster konkreter Schritt", section:"einordnung" }
     }
 
   ]
@@ -1498,13 +1498,13 @@ NAVIGATOR.modules.push({
 
     { id:"m8_intro", type:"info", content:[
       "Dieses Modul fasst zusammen, wo du stehst.",
-      "Die Checkliste zeigt, welche Themen du bereits bearbeitet hast -- und wo noch offene Fragen sind.",
+      "Die Checkliste zeigt, welche Themen du bereits bearbeitet hast - und wo noch offene Fragen sind.",
       "Am Ende bewertest du selbst den Reifegrad deines Use Cases."
     ]},
 
-    // Checkliste -- wizard.js wertet referenced_field aus und setzt Ampelstatus
+    // Checkliste - wizard.js wertet referenced_field aus und setzt Ampelstatus
     { id:"m8_checkliste", type:"checklist",
-      label:"Arbeitsstand -- Checkliste",
+      label:"Arbeitsstand - Checkliste",
       hint:"Ampelstatus wird aus deinen bisherigen Antworten abgeleitet. Du kannst Eintraege manuell korrigieren.",
       required:false,
       items:[
@@ -1516,8 +1516,8 @@ NAVIGATOR.modules.push({
         },
         {
           id:"check_ki_eignung",
-          label:"KI-Eignung grundlegend geprueft",
-          referenced_fields:["m4_haeufigkeit","m4_fehlertoleranz","m4_nutzen_aufwand"],
+          label:"KI-Eignung grundlegend geprüft",
+          referenced_fields:["m4_häufigkeit","m4_fehlertoleranz","m4_nutzen_aufwand"],
           status_logic:"green_if_any_filled"
         },
         {
@@ -1528,19 +1528,19 @@ NAVIGATOR.modules.push({
         },
         {
           id:"check_datenschutz_pb",
-          label:"Personenbezogene Daten und Rechtsgrundlage geprueft",
+          label:"Personenbezogene Daten und Rechtsgrundlage geprüft",
           referenced_fields:["m5_pb_daten","m5_rechtsgrundlage"],
           status_logic:"green_if_any_filled"
         },
         {
           id:"check_dsfa",
-          label:"Notwendigkeit einer DSFA geprueft",
-          referenced_fields:["m5_dsfa_geprueft"],
+          label:"Notwendigkeit einer DSFA geprüft",
+          referenced_fields:["m5_dsfa_geprüft"],
           status_logic:"green_if_not_value:noch_nicht,unbekannt"
         },
         {
           id:"check_aiact",
-          label:"Risikoklasse nach EU AI Act eingeschaetzt",
+          label:"Risikoklasse nach EU AI Act eingeschätzt",
           referenced_fields:["m5_aiact_risikoklasse"],
           status_logic:"green_if_not_value:unklar"
         },
@@ -1552,13 +1552,13 @@ NAVIGATOR.modules.push({
         },
         {
           id:"check_hosting",
-          label:"Hosting und Datensouveraenitaet geklaert",
+          label:"Hosting und Datensouveränität geklärt",
           referenced_fields:["m4_hosting_ki","m4_hosting_daten"],
           status_logic:"green_if_not_value:unklar"
         },
         {
           id:"check_lockin",
-          label:"Lock-in-Risiken bewusst eingegangen und begruendet",
+          label:"Lock-in-Risiken bewusst eingegangen und begründet",
           referenced_fields:["m4_lockin_begruendung"],
           status_logic:"green_if_filled"
         },
@@ -1581,9 +1581,9 @@ NAVIGATOR.modules.push({
           status_logic:"green_if_not_value:noch_unklar"
         },
         {
-          id:"check_naechster_schritt",
-          label:"Naechster konkreter Schritt definiert",
-          referenced_fields:["m7_naechste_schritte"],
+          id:"check_nächster_schritt",
+          label:"Nächster konkreter Schritt definiert",
+          referenced_fields:["m7_nächste_schritte"],
           status_logic:"green_if_filled"
         }
       ],
@@ -1593,52 +1593,52 @@ NAVIGATOR.modules.push({
     // Reifegrad-Selbsteinstufung
     { id:"m8_reifegrad", type:"select",
       label:"Wo steht dein Use Case insgesamt?",
-      hint:"Eigene Einschaetzung -- unabhaengig vom Checklistenstatus.",
+      hint:"Eigene Einschätzung - unabhaengig vom Checklistenstatus.",
       required:false,
       options:[
         { value:"idee",
-          label:"Idee -- das Vorhaben ist konzeptionell, viele Fragen sind noch offen",
-          description:"Ich habe eine Richtung, aber noch keine Klarheit ueber Umsetzbarkeit, Ressourcen oder Datenschutz."
+          label:"Idee - das Vorhaben ist konzeptionell, viele Fragen sind noch offen",
+          description:"Ich habe eine Richtung, aber noch keine Klarheit über Umsetzbarkeit, Ressourcen oder Datenschutz."
         },
         { value:"klaerung",
-          label:"In Klaerung -- konkrete Vorstellung, wichtige Fragen werden gerade bearbeitet",
+          label:"In Klärung - konkrete Vorstellung, wichtige Fragen werden gerade bearbeitet",
           description:"Ich weiss, was ich will. Datenschutz, Technik oder Organisation sind noch in Abstimmung."
         },
         { value:"umsetzungsreif",
-          label:"Umsetzungsreif -- wesentliche Fragen geklaert, Umsetzung kann beginnen",
-          description:"Konzept steht, Stakeholder sind einbezogen, Datenschutz ist geklaert, Ressourcen sind gesichert."
+          label:"Umsetzungsreif - wesentliche Fragen geklärt, Umsetzung kann beginnen",
+          description:"Konzept steht, Stakeholder sind einbezogen, Datenschutz ist geklärt, Ressourcen sind gesichert."
         }
       ],
       output:{ label:"Reifegrad", section:"selbstbewertung" }
     },
 
     { id:"m8_offene_punkte", type:"textarea",
-      label:"Was sind die wichtigsten offenen Punkte, die du noch klaeren musst?",
-      hint:"Maximal 3 Punkte -- so konkret wie moeglich.",
+      label:"Was sind die wichtigsten offenen Punkte, die du noch klären musst?",
+      hint:"Maximal 3 Punkte - so konkret wie möglich.",
       required:false,
       rows:4,
       output:{ label:"Wichtigste offene Punkte", section:"selbstbewertung" }
     },
 
-    { id:"m8_unterstuetzungsbedarf", type:"multiselect",
-      label:"Wobei brauchst du noch Unterstuetzung?",
+    { id:"m8_unterstützungsbedarf", type:"multiselect",
+      label:"Wobei brauchst du noch Unterstützung?",
       required:false,
       options:[
-        { value:"datenschutz",     label:"Datenschutzrechtliche Klaerung" },
+        { value:"datenschutz",     label:"Datenschutzrechtliche Klärung" },
         { value:"technik",         label:"Technische Beratung (KI-Typ, Hosting, Integration)" },
         { value:"prompting",       label:"Prompting-Kompetenz aufbauen" },
         { value:"stakeholder",     label:"Stakeholder gewinnen oder einbinden" },
         { value:"budget",          label:"Finanzierung / Foerdermittel" },
         { value:"methodik",        label:"Methodik (Use-Case-Entwicklung, Pilotierung)" },
         { value:"vernetzung",      label:"Austausch mit anderen Kommunen zu aehnlichen Use Cases" },
-        { value:"keiner",          label:"Kein Unterstuetzungsbedarf -- ich kann eigenstaendig weitermachen" }
+        { value:"keiner",          label:"Kein Unterstützungsbedarf - ich kann eigenstaendig weitermachen" }
       ],
-      output:{ label:"Unterstuetzungsbedarf", section:"selbstbewertung" }
+      output:{ label:"Unterstützungsbedarf", section:"selbstbewertung" }
     },
 
     { id:"m8_gesamtreflexion", type:"textarea",
-      label:"Was hat dich in diesem Reflexionsprozess am meisten ueberrascht oder veraendert?",
-      hint:"Optional -- fuer den persoenlichen Steckbrief.",
+      label:"Was hat dich in diesem Reflexionsprozess am meisten überrascht oder verändert?",
+      hint:"Optional - für den persoenlichen Steckbrief.",
       required:false,
       rows:4,
       output:{ label:"Persoenliche Gesamtreflexion", section:"selbstbewertung" }
@@ -1649,13 +1649,13 @@ NAVIGATOR.modules.push({
 
 
 // MODUL 9 — Export-Konfiguration
-// Kein nutzerorientiertes Modul -- definiert Struktur und Templates
-// fuer den Export (Markdown + PDF).
+// Kein nutzerorientiertes Modul - definiert Struktur und Templates
+// für den Export (Markdown + PDF).
 // Wird von wizard.js beim Rendern des Steckbriefs verwendet.
 
 NAVIGATOR.exportConfig = {
 
-  // Metadaten fuer die Ausgabedatei
+  // Metadaten für die Ausgabedatei
   document: {
     title: "KI-Use-Case-Steckbrief",
     subtitle: "Erstellt mit dem KI-Use-Case-Navigator",
@@ -1686,21 +1686,21 @@ NAVIGATOR.exportConfig = {
       includeInPdf: true,
       fields: ["m3_daten_vorhanden","m3_daten_beschreibung","m3_systeme_vorhanden",
                "m3_integration_notwendig","m3_entscheider","m3_dsb_einbezogen",
-               "m3_unterstuetzung","m3_ressourcen","m3_zeitrahmen","m3_hindernisse"]
+               "m3_unterstützung","m3_ressourcen","m3_zeitrahmen","m3_hindernisse"]
     },
     {
       id: "eignung",
       title: "KI-Eignung",
       icon: "checkmark",
       includeInPdf: true,
-      // Bei ki_eignung = "nein": alternativer Abschnitt "Begruendete Entscheidung gegen KI"
-      alternativeTitle_ki_nein: "Begruendete Entscheidung: KI nicht empfohlen",
-      fields: ["m4_haeufigkeit","m4_variabilitaet","m4_fehlertoleranz",
+      // Bei ki_eignung = "nein": alternativer Abschnitt "Begründete Entscheidung gegen KI"
+      alternativeTitle_ki_nein: "Begründete Entscheidung: KI nicht empfohlen",
+      fields: ["m4_häufigkeit","m4_variabilitaet","m4_fehlertoleranz",
                "m4_rechtliche_bindung","m4_nutzen_aufwand","m4_kein_einsatz"]
     },
     {
       id: "technologie",
-      title: "Technologieauswahl & Datensouveraenitaet",
+      title: "Technologieauswahl & Datensouveränität",
       icon: "gear",
       includeInPdf: true,
       skipWhen: { stateKey:"ki_eignung", value:"nein" },
@@ -1713,7 +1713,7 @@ NAVIGATOR.exportConfig = {
       icon: "shield",
       includeInPdf: true,
       fields: ["m5_pb_daten","m5_datenkategorien","m5_rechtsgrundlage",
-               "m5_dsfa_geprueft","m5_dsfa_kriterien","m5_avv","m5_drittland",
+               "m5_dsfa_geprüft","m5_dsfa_kriterien","m5_avv","m5_drittland",
                "m5_aiact_risikoklasse","m5_aiact_verbote","m5_automatisierung",
                "m5_human_loop","m5_transparenz","m5_dsb_konsultiert","m5_vvt",
                "m5_offene_fragen"]
@@ -1740,7 +1740,7 @@ NAVIGATOR.exportConfig = {
       fields: ["m7_ausgangspunkt","m7_absicht","m7_erfolg_definition",
                "m7_prozess_veraenderung","m7_bereichsgrenze","m7_lerneffekt",
                "m7_rollen_veraenderung","m7_personalrat","m7_entscheidungstiefe",
-               "m7_einordnung","m7_einordnung_begruendung","m7_naechste_schritte"]
+               "m7_einordnung","m7_einordnung_begruendung","m7_nächste_schritte"]
     },
     {
       id: "selbstbewertung",
@@ -1748,25 +1748,25 @@ NAVIGATOR.exportConfig = {
       icon: "star",
       includeInPdf: true,
       fields: ["m8_checkliste","m8_reifegrad","m8_offene_punkte",
-               "m8_unterstuetzungsbedarf","m8_gesamtreflexion"]
+               "m8_unterstützungsbedarf","m8_gesamtreflexion"]
     }
   ],
 
   // Alternativ-Export bei ki_eignung = "nein"
   // Reduzierter Steckbrief: Meta + UseCase + Eignung + Datenschutz + Reflexion
   alternativeExport_ki_nein: {
-    title: "Reflexionsdokument: Begruendete Entscheidung gegen KI-Einsatz",
+    title: "Reflexionsdokument: Begründete Entscheidung gegen KI-Einsatz",
     sections: ["meta","use_case","eignung","datenschutz","selbstbewertung"]
   },
 
-  // Markdown-Export: Vorlage fuer Abschnittstrenner
+  // Markdown-Export: Vorlage für Abschnittstrenner
   markdown: {
     sectionSeparator: "---",
     fieldFormat: "**{label}:** {value}",
     emptyFieldText: "(nicht beantwortet)"
   },
 
-  // PDF-Export: Hinweise fuer wizard.js / jsPDF
+  // PDF-Export: Hinweise für wizard.js / jsPDF
   pdf: {
     pageSize: "A4",
     margins: { top:20, right:20, bottom:20, left:20 },
