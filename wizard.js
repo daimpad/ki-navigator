@@ -18,35 +18,13 @@
     'm4_rechtliche_bindung', 'm4_nutzen_aufwand'
   ];
 
-  const ONBOARDING_SCREENS = [
-    {
-      icon: '🧭',
-      title: 'Was ist der KI-Use-Case-Navigator?',
-      body: 'Ein Werkzeug zur strukturierten Reflexion deines KI-Vorhabens in der Kommunalverwaltung — von der ersten Idee bis zur begründeten Entscheidung.',
-      hint: null
-    },
-    {
-      icon: '⏱',
-      title: 'Wie lange dauert das?',
-      body: 'Ca. 15–25 Minuten — je nachdem, wie weit dein Use Case schon konkretisiert ist. Alle Felder sind freiwillig. Du kannst jederzeit unterbrechen und weitermachen.',
-      hint: 'Dein Fortschritt wird automatisch im Browser gespeichert.'
-    },
-    {
-      icon: '📄',
-      title: 'Was bekommst du am Ende?',
-      body: 'Einen persönlichen Use-Case-Steckbrief mit Selbstbewertung — zum Herunterladen als Markdown oder PDF. Alle Daten bleiben ausschließlich in deinem Browser.',
-      hint: null
-    }
-  ];
-
   // ── App-State ──────────────────────────────────────────────────────────────
   let state    = {};   // { use_case_typ, ki_eignung, hosting_typ }
   let responses = {};  // { fieldId: value, ... }
   let currentModuleIndex = 0;
   let onExportScreen = false;
-  let onboardingIndex = -1; // >= 0 wenn Onboarding aktiv
-  let pendingResume = null;  // Callback für URL-Import-Resume
-  let sessionConfig = null;  // Facilitator-Session-Konfiguration
+  let pendingResume = null;
+  let sessionConfig = null;
 
   // ── Hilfsfunktionen ────────────────────────────────────────────────────────
 
@@ -463,52 +441,6 @@
       });
     });
     return out;
-  }
-
-  // ── Onboarding ─────────────────────────────────────────────────────────────
-
-  function renderOnboarding(idx) {
-    onboardingIndex = idx;
-    const screen = ONBOARDING_SCREENS[idx];
-    const container = document.getElementById('module-container');
-    container.innerHTML = '';
-
-    let dotsHtml = '<div class="onboarding-dots">';
-    ONBOARDING_SCREENS.forEach((_, i) => {
-      dotsHtml += `<span class="dot${i === idx ? ' active' : ''}"></span>`;
-    });
-    dotsHtml += '</div>';
-
-    const wrap = document.createElement('div');
-    wrap.className = 'onboarding-screen';
-    wrap.innerHTML =
-      `<div class="onboarding-icon">${screen.icon}</div>` +
-      `<h2 class="onboarding-title">${escapeHtml(screen.title)}</h2>` +
-      `<p class="onboarding-body">${escapeHtml(screen.body)}</p>` +
-      (screen.hint ? `<p class="onboarding-hint">${escapeHtml(screen.hint)}</p>` : '') +
-      dotsHtml;
-    container.appendChild(wrap);
-
-    // Progress-Bar ausblenden
-    document.getElementById('progress-bar').innerHTML = '';
-
-    const btnBack = document.getElementById('btn-back');
-    const btnSkip = document.getElementById('btn-skip');
-    const btnNext = document.getElementById('btn-next');
-    btnBack.disabled = idx === 0;
-    btnSkip.style.display = '';
-    btnNext.style.display = '';
-    btnNext.textContent = idx === ONBOARDING_SCREENS.length - 1 ? 'Los geht\'s →' : 'Weiter →';
-  }
-
-  function finishOnboarding() {
-    onboardingIndex = -1;
-    responses['_onboarding_done'] = true;
-    saveToStorage();
-    startFresh();
-    if (sessionConfig && sessionConfig.welcomeMessage) {
-      setTimeout(() => showToast(sessionConfig.welcomeMessage, 6000), 400);
-    }
   }
 
   // ── Modul-Rendering ────────────────────────────────────────────────────────
@@ -982,6 +914,7 @@
         <div class="export-buttons">
           <button id="btn-dl-md"  class="btn btn-primary btn-export"><i class="fa-solid fa-download"></i> Markdown</button>
           <button id="btn-dl-pdf" class="btn btn-primary btn-export"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+          <button id="btn-share"  class="btn btn-secondary btn-export"><i class="fa-solid fa-link"></i> Link teilen</button>
         </div>
       </div>
       <div class="export-preview-box field">
@@ -1001,7 +934,6 @@
 
     document.getElementById('btn-dl-md').addEventListener('click',  downloadMarkdown);
     document.getElementById('btn-dl-pdf').addEventListener('click', downloadPDF);
-    document.getElementById('btn-print').addEventListener('click',  printSteckbrief);
     document.getElementById('btn-share').addEventListener('click', () => {
       const url = getShareURL();
       if (navigator.clipboard) {
@@ -1010,46 +942,6 @@
         prompt('Link kopieren:', url);
       }
     });
-  }
-
-  // ── Druckansicht ───────────────────────────────────────────────────────────
-
-  function printSteckbrief() {
-    document.getElementById('print-view').innerHTML = buildPrintHTML();
-    window.print();
-    setTimeout(() => { document.getElementById('print-view').innerHTML = ''; }, 1000);
-  }
-
-  function buildPrintHTML() {
-    const cfg      = NAVIGATOR.exportConfig;
-    const sections = getExportSections();
-    const dateStr  = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-    let html = `<div class="print-header">
-      <h1>${escapeHtml(getDocTitle())}</h1>
-      <p class="print-meta">${escapeHtml(cfg.document.subtitle)} &mdash; Erstellt am ${dateStr}</p>
-    </div>`;
-
-    sections.forEach(section => {
-      const rows = section.fields.map(fid => {
-        const field = getFieldDef(fid);
-        if (!field || !field.output) return '';
-        const val = getDisplayValue(field, responses[fid]);
-        if (!val) return '';
-        const safeLabel = escapeHtml(field.output.label);
-        const safeVal   = escapeHtml(val).replace(/\n/g, '<br>');
-        return `<tr><td class="print-label">${safeLabel}</td><td class="print-value">${safeVal}</td></tr>`;
-      }).filter(Boolean).join('');
-
-      if (!rows) return;
-      html += `<div class="print-section">
-        <h2>${escapeHtml(getSectionTitle(section))}</h2>
-        <table>${rows}</table>
-      </div>`;
-    });
-
-    html += `<p class="print-footer">${escapeHtml(cfg.document.footerNote)}</p>`;
-    return html;
   }
 
   // ── Facilitator-Session ────────────────────────────────────────────────────
@@ -1138,31 +1030,12 @@
       if (hasSaved) {
         showResumeDialog(saved.savedAt, null);
       } else {
-        const onboardingDone = saved && saved.responses && saved.responses['_onboarding_done'];
-        if (onboardingDone) {
-          startFresh();
-        } else {
-          renderOnboarding(0);
-        }
+        startFresh();
       }
     }
 
-    document.getElementById('btn-next').addEventListener('click', () => {
-      if (onboardingIndex >= 0) {
-        if (onboardingIndex < ONBOARDING_SCREENS.length - 1) {
-          renderOnboarding(onboardingIndex + 1);
-        } else {
-          finishOnboarding();
-        }
-        return;
-      }
-      goNext();
-    });
+    document.getElementById('btn-next').addEventListener('click', goNext);
     document.getElementById('btn-back').addEventListener('click', () => {
-      if (onboardingIndex > 0) {
-        renderOnboarding(onboardingIndex - 1);
-        return;
-      }
       if (onExportScreen) {
         onExportScreen = false;
         document.getElementById('btn-next').style.display = '';
@@ -1171,13 +1044,7 @@
         navigateTo(currentModuleIndex - 1);
       }
     });
-    document.getElementById('btn-skip').addEventListener('click', () => {
-      if (onboardingIndex >= 0) {
-        finishOnboarding();
-        return;
-      }
-      goNext();
-    });
+    document.getElementById('btn-skip').addEventListener('click', goNext);
 
     document.getElementById('btn-resume-yes').addEventListener('click', () => {
       hideResumeDialog();
@@ -1206,9 +1073,7 @@
 
   function startFresh() {
     resetState();
-    const onboardingDone = responses['_onboarding_done'];
     responses = {};
-    if (onboardingDone) responses['_onboarding_done'] = true;
     currentModuleIndex = 0;
     renderModule(0);
   }
