@@ -798,6 +798,7 @@
           recomputeStateFromResponses();
           saveToStorage();
           overlay.remove();
+          onExportScreen = false;
           currentModuleIndex = 0;
           renderModule(0);
           showToast('Daten erfolgreich importiert');
