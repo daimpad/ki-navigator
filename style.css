@@ -656,6 +656,44 @@ mark.g {
 }
 .dialog-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
+/* ── Import-Dialog ───────────────────────────────────────────────────────── */
+.dialog-box--wide { max-width: 520px; }
+
+.import-drop-area {
+  border: var(--nz-stroke-rule) dashed var(--nz-ink);
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--nz-font-mono);
+  font-size: 12px;
+  color: var(--nz-ink-70);
+  cursor: default;
+  transition: background 0.15s;
+}
+.import-drop-area.drag-over {
+  background: var(--nz-yellow);
+}
+.import-drop-area .fa-solid {
+  font-size: 28px;
+  color: var(--nz-ink);
+}
+.import-file-label {
+  cursor: pointer;
+}
+.import-error {
+  color: #c0392b;
+  font-family: var(--nz-font-mono);
+  font-size: 12px;
+}
+.dialog-box code {
+  font-family: var(--nz-font-mono);
+  font-size: 12px;
+  background: var(--nz-yellow);
+  padding: 1px 4px;
+}
+
 /* ── Export-Screen ───────────────────────────────────────────────────────── */
 .export-screen {
   display: flex;
