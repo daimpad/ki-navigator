@@ -14,7 +14,7 @@
   const M4_THRESHOLD_GUT     = 7;
   const M4_THRESHOLD_BEDINGT = 4;
   const M4_SCORING_FIELDS = [
-    'm4_haeufigkeit', 'm4_variabilitaet', 'm4_fehlertoleranz',
+    'm4_häufigkeit', 'm4_variabilitaet', 'm4_fehlertoleranz',
     'm4_rechtliche_bindung', 'm4_nutzen_aufwand'
   ];
 
@@ -974,7 +974,7 @@
     const payload = { v: 1, r: responses, s: state };
     const json    = JSON.stringify(payload);
     const bytes   = new TextEncoder().encode(json);
-    const encoded = btoa(String.fromCharCode(...bytes));
+    const encoded = btoa(Array.from(bytes, b => String.fromCharCode(b)).join(''));
     const base    = window.location.origin + window.location.pathname;
     return base + '#share=' + encoded;
   }
