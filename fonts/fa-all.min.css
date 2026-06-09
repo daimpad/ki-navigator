@@ -25,8 +25,11 @@
 }
 
 /* Icons used in ki-navigator */
-.fa-arrow-left::before  { content: "\f060"; }
-.fa-arrow-right::before { content: "\f061"; }
-.fa-download::before    { content: "\f019"; }
-.fa-file-pdf::before    { content: "\f1c1"; }
-.fa-link::before        { content: "\f0c1"; }
+.fa-arrow-left::before   { content: "\f060"; }
+.fa-arrow-right::before  { content: "\f061"; }
+.fa-download::before     { content: "\f019"; }
+.fa-file-pdf::before     { content: "\f1c1"; }
+.fa-link::before         { content: "\f0c1"; }
+.fa-file-export::before  { content: "\f56e"; }
+.fa-file-import::before  { content: "\f56f"; }
+.fa-upload::before       { content: "\f093"; }

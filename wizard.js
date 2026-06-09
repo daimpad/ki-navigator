@@ -728,6 +728,106 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  // ── JSON-Export / Import ───────────────────────────────────────────────────
+
+  function downloadJSON() {
+    const payload = { v: 1, exportedAt: new Date().toISOString(), responses, state };
+    const json = JSON.stringify(payload, null, 2);
+    const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${NAVIGATOR.meta.exportFilename}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function showImportDialog() {
+    const overlay = document.createElement('div');
+    overlay.className = 'dialog-overlay';
+    overlay.id = 'import-dialog';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'import-dialog-title');
+    overlay.innerHTML = `
+      <div class="dialog-box dialog-box--wide">
+        <h2 id="import-dialog-title">JSON-Datei importieren</h2>
+        <p>Wähle eine zuvor exportierte <code>.json</code>-Datei aus, um den gespeicherten Stand wiederherzustellen.</p>
+        <div class="import-drop-area" id="import-drop-area">
+          <i class="fa-solid fa-upload"></i>
+          <span>Datei hierher ziehen oder</span>
+          <label class="btn btn-secondary import-file-label">
+            Datei auswählen
+            <input type="file" id="import-file-input" accept=".json,application/json" style="display:none">
+          </label>
+        </div>
+        <p id="import-error" class="import-error" style="display:none"></p>
+        <div class="dialog-actions">
+          <button id="btn-import-cancel" type="button" class="btn btn-secondary">Abbrechen</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const fileInput = overlay.querySelector('#import-file-input');
+    const dropArea  = overlay.querySelector('#import-drop-area');
+    const errorEl   = overlay.querySelector('#import-error');
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.style.display = '';
+    }
+
+    function processFile(file) {
+      if (!file || !file.name.endsWith('.json')) {
+        showError('Bitte eine gültige .json-Datei auswählen.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const payload = JSON.parse(e.target.result);
+          if (!payload.responses || typeof payload.responses !== 'object') {
+            showError('Ungültiges Format: "responses" fehlt.');
+            return;
+          }
+          responses = payload.responses;
+          state     = payload.state && typeof payload.state === 'object' ? payload.state : {};
+          recomputeStateFromResponses();
+          saveToStorage();
+          overlay.remove();
+          onExportScreen = false;
+          currentModuleIndex = 0;
+          renderModule(0);
+          showToast('Daten erfolgreich importiert');
+        } catch (err) {
+          showError('Datei konnte nicht gelesen werden: ' + err.message);
+        }
+      };
+      reader.readAsText(file, 'utf-8');
+    }
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) processFile(fileInput.files[0]);
+    });
+
+    dropArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropArea.classList.add('drag-over');
+    });
+    dropArea.addEventListener('dragleave', () => dropArea.classList.remove('drag-over'));
+    dropArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropArea.classList.remove('drag-over');
+      processFile(e.dataTransfer.files[0]);
+    });
+
+    overlay.querySelector('#btn-import-cancel').addEventListener('click', () => overlay.remove());
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+  }
+
   // ── PDF-Export ─────────────────────────────────────────────────────────────
 
   function generatePDF() {
@@ -912,9 +1012,11 @@
       <div class="export-action-box field">
         <p class="export-intro">Dein Use-Case-Steckbrief ist bereit zum Herunterladen.</p>
         <div class="export-buttons">
-          <button id="btn-dl-md"  class="btn btn-primary btn-export"><i class="fa-solid fa-download"></i> Markdown</button>
-          <button id="btn-dl-pdf" class="btn btn-primary btn-export"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-          <button id="btn-share"  class="btn btn-secondary btn-export"><i class="fa-solid fa-link"></i> Link teilen</button>
+          <button id="btn-dl-md"   class="btn btn-primary btn-export"><i class="fa-solid fa-download"></i> Markdown</button>
+          <button id="btn-dl-pdf"  class="btn btn-primary btn-export"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+          <button id="btn-dl-json" class="btn btn-primary btn-export"><i class="fa-solid fa-file-export"></i> JSON</button>
+          <button id="btn-share"   class="btn btn-secondary btn-export"><i class="fa-solid fa-link"></i> Link teilen</button>
+          <button id="btn-import"  class="btn btn-secondary btn-export"><i class="fa-solid fa-file-import"></i> Importieren</button>
         </div>
       </div>
       <div class="export-preview-box field">
@@ -932,8 +1034,10 @@
 
     updateProgressBar(NAVIGATOR.modules.length - 1);
 
-    document.getElementById('btn-dl-md').addEventListener('click',  downloadMarkdown);
-    document.getElementById('btn-dl-pdf').addEventListener('click', downloadPDF);
+    document.getElementById('btn-dl-md').addEventListener('click',   downloadMarkdown);
+    document.getElementById('btn-dl-pdf').addEventListener('click',  downloadPDF);
+    document.getElementById('btn-dl-json').addEventListener('click', downloadJSON);
+    document.getElementById('btn-import').addEventListener('click',  showImportDialog);
     document.getElementById('btn-share').addEventListener('click', () => {
       const url = getShareURL();
       if (navigator.clipboard) {
