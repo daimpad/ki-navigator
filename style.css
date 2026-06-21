@@ -709,6 +709,7 @@ mark.g {
 }
 .export-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
 .btn-export { flex: 1; min-width: 180px; }
+.btn-share-large { border-color: var(--nz-yellow, #f5c400); box-shadow: 4px 4px 0 var(--nz-yellow, #f5c400); }
 
 .export-preview-box {
   border: 2px solid var(--nz-ink);
