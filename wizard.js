@@ -1038,12 +1038,26 @@
     document.getElementById('btn-dl-pdf').addEventListener('click',  downloadPDF);
     document.getElementById('btn-dl-json').addEventListener('click', downloadJSON);
     document.getElementById('btn-import').addEventListener('click',  showImportDialog);
-    document.getElementById('btn-share').addEventListener('click', () => {
-      const url = getShareURL();
+
+    const shareURL    = getShareURL();
+    const shareKB     = Math.round(shareURL.length / 1024 * 10) / 10;
+    const shareLarge  = shareURL.length > 2000;
+    const btnShareEl  = document.getElementById('btn-share');
+    if (shareLarge) {
+      btnShareEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Link teilen';
+      btnShareEl.title = `URL ist ${shareKB} KB groß — kann in manchen Programmen abgeschnitten werden. Lieber JSON exportieren.`;
+      btnShareEl.classList.add('btn-share-large');
+    }
+    btnShareEl.addEventListener('click', () => {
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).then(() => showToast('Link in Zwischenablage kopiert'));
+        navigator.clipboard.writeText(shareURL).then(() => {
+          const msg = shareLarge
+            ? `Link kopiert (${shareKB} KB — bei Problemen JSON exportieren)`
+            : 'Link in Zwischenablage kopiert';
+          showToast(msg, shareLarge ? 5000 : 3000);
+        });
       } else {
-        prompt('Link kopieren:', url);
+        prompt('Link kopieren:', shareURL);
       }
     });
   }
