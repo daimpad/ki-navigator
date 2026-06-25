@@ -141,11 +141,12 @@
     html += `<label class="field-label${isCritical ? ' label-critical' : ''}" for="${field.id}">`;
     html += escapeHtml(text);
     html += `</label>`;
-    if (field.source) {
+    const hasPopup = field.source || field.help ||
+      (Array.isArray(field.sources) && field.sources.length > 0);
+    if (hasPopup) {
+      const aria = field.source ? field.source.label : 'Hilfe und Quellen';
       html += `<button type="button" class="source-btn"
-        data-label="${escapeHtml(field.source.label)}"
-        data-text="${escapeHtml(field.source.text)}"
-        aria-label="Quelle anzeigen: ${escapeHtml(field.source.label)}">ⓘ</button>`;
+        aria-label="Info anzeigen: ${escapeHtml(aria)}">ⓘ</button>`;
     }
     html += `</div>`;
     if (field.hint) {
@@ -399,26 +400,66 @@
 
   function attachSourceButtons(wrap) {
     wrap.querySelectorAll('.source-btn').forEach(btn => {
-      const label = btn.dataset.label;
-      const text  = btn.dataset.text;
+      const fieldEl = btn.closest('[data-id]');
+      const field   = fieldEl ? getFieldDef(fieldEl.dataset.id) : null;
+      if (!field) return;
+
+      const hasLinks = Array.isArray(field.sources) && field.sources.length > 0;
       let tooltip = null;
+
+      function buildHtml() {
+        let h = '';
+        if (field.help) {
+          h += `<p class="tip-help">${escapeHtml(field.help)}</p>`;
+        }
+        if (field.source) {
+          h += `<p class="tip-cite"><strong>${escapeHtml(field.source.label)}</strong>` +
+               `<br>${escapeHtml(field.source.text)}</p>`;
+        }
+        if (hasLinks) {
+          h += `<p class="tip-cite"><strong>Quellen</strong></p><ul class="tip-links">`;
+          field.sources.forEach(s => {
+            h += `<li><a href="${escapeHtml(s.url)}" target="_blank" rel="noopener noreferrer">` +
+                 `${escapeHtml(s.label)}</a></li>`;
+          });
+          h += `</ul>`;
+        }
+        return h;
+      }
 
       function showTip() {
         if (tooltip) return;
         tooltip = document.createElement('div');
-        tooltip.className = 'source-tooltip';
-        tooltip.innerHTML = `<strong>${escapeHtml(label)}</strong><br>${escapeHtml(text)}`;
+        tooltip.className = 'source-tooltip' + (hasLinks ? ' source-tooltip--interactive' : '');
+        tooltip.innerHTML = buildHtml();
         btn.insertAdjacentElement('afterend', tooltip);
       }
       function hideTip() {
         if (tooltip) { tooltip.remove(); tooltip = null; }
       }
 
-      btn.addEventListener('mouseenter', showTip);
-      btn.addEventListener('mouseleave', hideTip);
-      btn.addEventListener('focus',      showTip);
-      btn.addEventListener('blur',       hideTip);
-      btn.addEventListener('click', e => { e.preventDefault(); tooltip ? hideTip() : showTip(); });
+      if (hasLinks) {
+        // Mit Links: Klick-Toggle, bleibt offen, damit Links anklickbar sind
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          if (tooltip) { hideTip(); return; }
+          showTip();
+          const onDocClick = ev => {
+            if (tooltip && !tooltip.contains(ev.target) && ev.target !== btn) {
+              hideTip();
+              document.removeEventListener('click', onDocClick);
+            }
+          };
+          setTimeout(() => document.addEventListener('click', onDocClick), 0);
+        });
+      } else {
+        // Nur Text/Hilfe: Hover + Klick-Toggle
+        btn.addEventListener('mouseenter', showTip);
+        btn.addEventListener('mouseleave', hideTip);
+        btn.addEventListener('focus',      showTip);
+        btn.addEventListener('blur',       hideTip);
+        btn.addEventListener('click', e => { e.preventDefault(); tooltip ? hideTip() : showTip(); });
+      }
     });
   }
 

@@ -335,6 +335,28 @@ mark.g {
   letter-spacing: 0.02em;
   pointer-events: none;
 }
+.source-tooltip p { margin: 0; }
+.source-tooltip p + p,
+.source-tooltip .tip-cite { margin-top: 8px; }
+.source-tooltip .tip-help { line-height: 1.6; }
+
+/* Interaktives Popup mit anklickbaren Quell-Links */
+.source-tooltip--interactive {
+  pointer-events: auto;
+  max-width: min(380px, calc(100vw - 40px));
+}
+.source-tooltip .tip-links {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  list-style: square;
+}
+.source-tooltip .tip-links li { margin-bottom: 5px; }
+.source-tooltip a {
+  color: var(--nz-paper);
+  text-decoration: underline;
+  word-break: break-word;
+}
+.source-tooltip a:hover { color: var(--nz-green); }
 
 /* ── Text / Textarea ───────────────────────────────────────────────────── */
 .field-type-text input,

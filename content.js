@@ -234,6 +234,7 @@ const NAVIGATOR = {
           type: "textarea",
           label: "Beschreibe deinen Use Case in 3–5 Sätzen",
           hint: "Was soll die KI konkret tun? Wer nutzt es? In welchem Kontext?",
+          help: "Beschreibe, was deine KI-Lösung tun soll - nicht wie sie technisch funktioniert. Vermeide an dieser Stelle Produktnamen oder Anbieter. Es geht um das Was, nicht um das Womit. Eine gute Beschreibung lässt offen, mit welcher konkreten Technologie das Ziel später erreicht wird. Das hält den Lösungsraum bewusst weit - die Festlegung auf eine bestimmte Architektur kommt später.",
           required: false,
           rows: 5,
           output: { label: "Beschreibung", section: "use_case" }
@@ -244,6 +245,7 @@ const NAVIGATOR = {
           type: "textarea",
           label: "Welches Problem oder welchen Bedarf soll der Use Case adressieren?",
           hint: "Was passiert heute ohne KI? Wo liegt die Ineffizienz, Lücke oder Belastung?",
+          help: "Das Problem ist nicht 'wir haben keine KI' - sondern eine konkrete Schwachstelle im Prozess. Was ärgert die Bürgerinnen und Bürger, die Beschäftigten oder die Verwaltungsleitung? Wo entstehen vermeidbare Kosten, Wartezeiten oder Fehler? Wenn du das Problem in einem Satz formulieren kannst, hilft das später bei der Argumentation - auch gegenüber Stakeholdern, die KI skeptisch gegenüberstehen.",
           required: false,
           rows: 4,
           output: { label: "Ausgangsproblem / Bedarf", section: "use_case" }
@@ -368,6 +370,12 @@ const NAVIGATOR = {
           type: "multiselect",
           label: "Wer muss an der Entscheidung beteiligt werden?",
           hint: "Mehrfachauswahl",
+          help: "Stakeholder sind alle Personen, deren Zustimmung, Mitwirkung oder Akzeptanz du für die Umsetzung brauchst - oder die durch das Vorhaben unmittelbar betroffen sind. Unterscheide vier Kategorien: Entscheider (formal zuständig für Zustimmung - z. B. Verwaltungsleitung, Personalrat), Bewerter (prüfen kritisch - z. B. Datenschutzbeauftragte, Rechnungsprüfung), Multiplikatoren (können das Vorhaben aktiv unterstützen - z. B. CDO, Digitalisierungsbeauftragte, Innovationsbüros) und Betroffene (nutzen das System, ohne formal eingebunden zu sein - z. B. Bürgerinnen und Bürger, Beschäftigte in der Sachbearbeitung). In fast jedem kommunalen KI-Vorhaben sind dabei: Datenschutzbeauftragte, Personalrat, IT-Verantwortliche und Verwaltungsleitung. Notiere pro Stakeholder, welche Erwartung oder Sorge zu erwarten ist - das hilft bei der späteren Kommunikation.",
+          sources: [
+            { label: "BfDI – KI in Behörden. Datenschutz von Anfang an mitdenken (Dezember 2025)", url: "https://www.bfdi.bund.de/SharedDocs/Downloads/DE/Konsultationsverfahren/1_KI/Handreichung-KI-Behoerden.html" },
+            { label: "KGSt – Stakeholder-Management in kommunalen Digitalisierungsvorhaben", url: "https://www.kgst.de" },
+            { label: "NACo AI County Compass (Juli 2024, englischsprachig, übertragbar)", url: "https://www.naco.org" }
+          ],
           required: false,
           options: [
             { value: "it_abteilung",           label: "IT-Abteilung / Systemverantwortliche" },
@@ -614,6 +622,12 @@ NAVIGATOR.modules.push({
       id: "m4_ki_typ",
       type: "select",
       label: "Welcher KI-Ansatz passt am besten?",
+      help: "Nicht jedes Vorhaben braucht ein Sprachmodell. Bei klar definierten Standardprozessen mit eindeutigen Regeln (zum Beispiel: 'Wenn Anliegen X, dann Weiterleitung an Y') reichen regelbasierte Systeme oft aus - sie sind günstiger, transparenter, datenschutzfreundlicher und stabiler im Betrieb. Generative KI ist sinnvoll, wenn freie Sprache verarbeitet werden muss, wenn Texte zusammengefasst oder umformuliert werden sollen, oder wenn Klassifikationen ohne klare Regeln nötig sind. Machine Learning im engeren Sinn passt bei datenbasierten Mustererkennungen, zum Beispiel bei der automatischen Einsortierung von Dokumenten anhand vieler Beispieldaten. Wenn du dir nicht sicher bist, wähle 'noch unklar' - das ist eine gültige Antwort und Teil der gemeinsamen Klärung in der Werkstatt.",
+      sources: [
+        { label: "BfDI – KI in Behörden. Datenschutz von Anfang an mitdenken (Dezember 2025)", url: "https://www.bfdi.bund.de/SharedDocs/Downloads/DE/Konsultationsverfahren/1_KI/Handreichung-KI-Behoerden.html" },
+        { label: "KI-Guide BMDV – Umsetzungsfahrplan für KI-Systeme in der Verwaltung (November 2025)", url: "https://www.bmdv.bund.de" },
+        { label: "Wiener KI-Kompass V2.0 – Einordnung von KI-Vorhaben", url: "https://digitales.wien.gv.at/projekt/ki-kompass/" }
+      ],
       required: false,
       showWhen: { stateKey: "ki_eignung", values: ["ja", "bedingt"] },
       options: [
@@ -975,6 +989,7 @@ NAVIGATOR.modules.push({
     { id:"m5_offene_fragen", type:"textarea",
       label:"Welche datenschutzrechtlichen Fragen sind noch offen?",
       hint:"z.B. Rechtsgrundlage unklar, DSFA aussteht, Drittlandtransfer ungeklärt",
+      help:"Eine offene Frage ist kein Mangel, sondern ein Arbeitsstand. Eine ehrliche Liste offener Fragen ist besser als ein scheinbar vollständiger Plan, in dem Lücken überspielt werden. Typische Felder, in denen offene Fragen vorkommen: Schnittstellen zu Bestandssystemen, Hosting und Betriebsmodell, datenschutzrechtliche Einordnung, Anbieterauswahl, Finanzierungslogik, Personalentwicklung. Eine gute offene Frage ist nicht 'Wir wissen noch nicht alles', sondern präzise formuliert mit klarem Adressaten: 'Wir müssen klären, ob System X eine API hat - Ansprechpartner ist Y.'",
       required:false, rows:4,
       output:{ label:"Offene Datenschutzfragen", section:"datenschutz" }
     }
@@ -1419,6 +1434,7 @@ NAVIGATOR.modules.push({
     { id:"m7_einordnung", type:"select",
       label:"KI als Applikation oder KI als Transformationsanlass - oder beides?",
       hint:"Es gibt keine richtige Antwort. Beide Einordnungen sind wertvoll - entscheidend ist die Bewusstheit.",
+      help:"Die Unterscheidung ist konzeptuell wichtig. KI als Applikation bedeutet: Der Prozess bleibt im Kern, was er war - KI wird als zusätzliches Werkzeug hinzugefügt, das einzelne Schritte schneller oder besser macht. KI als Transformationsanlass bedeutet: Der Prozess selbst wird neu gedacht, weil KI ganz neue Möglichkeiten eröffnet, die im alten Verfahren nicht denkbar waren. Ein Beispiel: Ein Chatbot, der die Hotline ergänzt und Standardfragen abfängt, ist eine Applikation. Ein Mehrebenenmodell, das die Hotline grundlegend umstrukturiert und Mitarbeitende für andere Tätigkeiten freisetzt, ist ein Transformationsanlass. Die Unterscheidung beeinflusst, wie du das Vorhaben begründest, welche Stakeholder du einbindest und welche Folgen du mitdenken musst.",
       required:false,
       options:[
         { value:"applikation",       label:"KI als Applikation - gezieltes Werkzeug für einen klar umrissenen Prozess" },
@@ -1473,6 +1489,77 @@ NAVIGATOR.modules.push({
       required:false,
       rows:3,
       output:{ label:"Nächster konkreter Schritt", section:"einordnung" }
+    }
+
+  ]
+});
+
+
+// ═══════════════════════════════════════════════════════════
+// MODUL Verhältnismäßigkeit — juristisches Prüfschema
+//
+// Fünf Reflexionsfelder (Legitimität, Geeignetheit, Erforderlichkeit,
+// Angemessenheit, Transformationsbereitschaft). Reine Textreflexion,
+// keine Scoring- oder Branching-Logik. Gemeinsame Quellen über QUELLEN.
+// ═══════════════════════════════════════════════════════════
+
+const VERHAELTNIS_QUELLEN = [
+  { label: "BfDI – KI in Behörden. Datenschutz von Anfang an mitdenken (Dezember 2025)", url: "https://www.bfdi.bund.de/SharedDocs/Downloads/DE/Konsultationsverfahren/1_KI/Handreichung-KI-Behoerden.html" },
+  { label: "Leitlinien für den Einsatz Künstlicher Intelligenz in der Bundesverwaltung (BeKI/BMI)", url: "https://www.cio.bund.de/Webs/CIO/DE/themen/innovativeVorhaben/Kuenstliche_Intelligenz/leitlinien_KI_Einsatz.html" },
+  { label: "AI Act der Europäischen Union – Anforderungen an Hochrisiko-KI", url: "https://artificialintelligenceact.eu/de/" },
+  { label: "KGSt-Materialien zu KI in der Kommunalverwaltung", url: "https://www.kgst.de" }
+];
+
+NAVIGATOR.modules.push({
+  id: "mvh",
+  title: "Verhältnismäßigkeit",
+  skippable: true,
+  progressLabel: "Verhältnismäßigkeit",
+  fields: [
+
+    { id:"mvh_intro", type:"info", content:[
+      "Dieser Schritt folgt einem juristischen Prüfschema, das in der Verwaltung bei jedem Eingriff in Rechte oder Ressourcen relevant ist.",
+      "Fünf Fragen helfen dir, dein Vorhaben ehrlich auf Verhältnismäßigkeit zu prüfen. Zu jeder Frage findest du über das Info-Symbol einen Hilfetext und kuratierte Quellen."
+    ]},
+
+    { id:"mvh_legitimitaet", type:"textarea",
+      label:"Legitimität: Welches Problem löst du wirklich?",
+      help:"Hier geht es um die ehrliche Antwort auf die Frage: Was ist der erkennbare Nutzen für die Bürgerinnen und Bürger, die Beschäftigten oder das Gemeinwohl? 'Wir wollen KI einsetzen' ist keine Legitimation - es ist eine Mittelwahl. Legitimität bedeutet: Es gibt ein anerkanntes Problem, das eine Lösung verdient. Wenn du das Problem nicht in einem Satz beschreiben kannst, den auch jemand außerhalb deiner Verwaltung versteht, fehlt die Legitimationsbasis.",
+      sources: VERHAELTNIS_QUELLEN,
+      required:false, rows:3,
+      output:{ label:"Legitimität", section:"verhaeltnismaessigkeit" }
+    },
+
+    { id:"mvh_geeignetheit", type:"textarea",
+      label:"Geeignetheit: Ist KI das richtige Mittel?",
+      help:"Geeignetheit fragt: Löst KI das Problem überhaupt - und besser als Alternativen? Ein KI-Chatbot löst kein Personalproblem, wenn die Anliegen der Bürgerinnen und Bürger im Kern individuelle Beratung brauchen. Eine KI-gestützte Dokumentenklassifikation löst kein Migrationsproblem, wenn die Altakten in unleserlichem Zustand sind. Prüfe ehrlich: Passt das Werkzeug zur Art des Problems?",
+      sources: VERHAELTNIS_QUELLEN,
+      required:false, rows:3,
+      output:{ label:"Geeignetheit", section:"verhaeltnismaessigkeit" }
+    },
+
+    { id:"mvh_erforderlichkeit", type:"textarea",
+      label:"Erforderlichkeit: Gibt es einfachere Alternativen?",
+      help:"Erforderlichkeit fragt: Gibt es einen weniger eingreifenden Weg, der dasselbe Ziel erreicht? Mehr Personal, bessere Schulung, ein einfaches Formular, eine FAQ-Seite, ein regelbasiertes System ohne KI? Wenn eine dieser Alternativen genauso oder fast genauso wirkt, ist KI rechtlich nicht erforderlich - auch wenn sie technisch faszinierend wäre. Erforderlichkeit ist die schwierigste Frage des Verhältnismäßigkeitstests, weil sie dich zwingt, die KI-Lösung gegen einfachere Wege zu verteidigen.",
+      sources: VERHAELTNIS_QUELLEN,
+      required:false, rows:3,
+      output:{ label:"Erforderlichkeit", section:"verhaeltnismaessigkeit" }
+    },
+
+    { id:"mvh_angemessenheit", type:"textarea",
+      label:"Angemessenheit: Stehen Nutzen und Risiken im Verhältnis?",
+      help:"Hier wägst du ab: Was gewinnen die Bürgerinnen und Bürger, die Beschäftigten oder die Verwaltung - und welche Risiken nimmst du in Kauf? Datenschutzrisiken, Risiken durch Konfabulation oder Bias, Akzeptanzrisiken im Personal, finanzielle Risiken. Angemessenheit ist erfüllt, wenn der Nutzen die Risiken deutlich überwiegt und die Risiken durch Schutzmaßnahmen reduzierbar sind. Wenn die Risiken nur durch nicht-realistische Idealbedingungen beherrschbar wären, ist die Lösung unangemessen.",
+      sources: VERHAELTNIS_QUELLEN,
+      required:false, rows:3,
+      output:{ label:"Angemessenheit", section:"verhaeltnismaessigkeit" }
+    },
+
+    { id:"mvh_transformationsbereitschaft", type:"textarea",
+      label:"Transformationsbereitschaft: Sind die organisationalen Voraussetzungen gegeben?",
+      help:"Diese Frage betrifft die Organisation, nicht die Technik. Sind die Beschäftigten, die das System nutzen sollen, bereit - haben sie das nötige Wissen, die Zeit, die Motivation? Ist die Führungsebene mitten dabei oder steht sie distanziert daneben? Sind Personalrat, IT, Datenschutz frühzeitig informiert? Ein technisch perfekter Use Case scheitert oft an organisationaler Unreife. Ehrliche Antwort: Wo stehst du hier, was muss vor der Einführung passieren?",
+      sources: VERHAELTNIS_QUELLEN,
+      required:false, rows:3,
+      output:{ label:"Transformationsbereitschaft", section:"verhaeltnismaessigkeit" }
     }
 
   ]
@@ -1742,6 +1829,14 @@ NAVIGATOR.exportConfig = {
                "m7_einordnung","m7_einordnung_begruendung","m7_nächste_schritte"]
     },
     {
+      id: "verhaeltnismaessigkeit",
+      title: "Verhältnismäßigkeit",
+      icon: "balance",
+      includeInPdf: true,
+      fields: ["mvh_legitimitaet","mvh_geeignetheit","mvh_erforderlichkeit",
+               "mvh_angemessenheit","mvh_transformationsbereitschaft"]
+    },
+    {
       id: "selbstbewertung",
       title: "Selbstbewertung",
       icon: "star",
@@ -1755,7 +1850,7 @@ NAVIGATOR.exportConfig = {
   // Reduzierter Steckbrief: Meta + UseCase + Eignung + Datenschutz + Reflexion
   alternativeExport_ki_nein: {
     title: "Reflexionsdokument: Begründete Entscheidung gegen KI-Einsatz",
-    sections: ["meta","use_case","eignung","datenschutz","selbstbewertung"]
+    sections: ["meta","use_case","eignung","datenschutz","verhaeltnismaessigkeit","selbstbewertung"]
   },
 
   // Markdown-Export: Vorlage für Abschnittstrenner
