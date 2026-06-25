@@ -712,6 +712,27 @@
     return section.title;
   }
 
+  // Sammelt eindeutige Quell-Links (field.sources) aller beantworteten Export-Felder
+  function collectSourceLinks() {
+    const seen  = new Set();
+    const links = [];
+    getExportSections().forEach(section => {
+      section.fields.forEach(fieldId => {
+        const field = getFieldDef(fieldId);
+        if (!field || !Array.isArray(field.sources)) return;
+        const val = getDisplayValue(field, responses[fieldId]);
+        if (!val) return; // nur für beantwortete Felder aufnehmen
+        field.sources.forEach(s => {
+          if (s && s.url && !seen.has(s.url)) {
+            seen.add(s.url);
+            links.push(s);
+          }
+        });
+      });
+    });
+    return links;
+  }
+
   function getDocTitle() {
     const cfg = NAVIGATOR.exportConfig;
     return state.ki_eignung === 'nein'
@@ -755,6 +776,13 @@
       if (!hasContent) md += `*(keine Angaben)*\n\n`;
       md += `${sep}\n\n`;
     });
+
+    const links = collectSourceLinks();
+    if (links.length > 0) {
+      md += `## Quellen & weiterführende Links\n\n`;
+      links.forEach(s => { md += `- [${s.label}](${s.url})\n`; });
+      md += `\n${sep}\n\n`;
+    }
 
     md += `*${cfg.document.footerNote}*\n`;
     return md;
@@ -990,7 +1018,8 @@
     });
 
     // ── Quellenangaben-Seite ───────────────────────────────────────────────
-    if (footnotes.length > 0) {
+    const sourceLinks = collectSourceLinks();
+    if (footnotes.length > 0 || sourceLinks.length > 0) {
       newPage();
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
@@ -1006,6 +1035,30 @@
         pdfText(nLines, m.left, y);
         y += nLines.length * LH * 0.85 + 2;
       });
+
+      if (sourceLinks.length > 0) {
+        if (footnotes.length > 0) y += LH * 0.8;
+        checkY(LH * 2);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(15, 76, 129);
+        pdfText('Weiterführende Links', m.left, y);
+        y += LH * 1.4;
+        doc.setTextColor(0);
+        sourceLinks.forEach(s => {
+          const lblLines = doc.splitTextToSize('• ' + s.label, cw);
+          checkY(lblLines.length * LH * 0.85 + LH * 0.85 + 2);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          pdfText(lblLines, m.left, y);
+          y += lblLines.length * LH * 0.85;
+          // URL als klickbarer Link in Blau
+          doc.setTextColor(15, 76, 129);
+          doc.textWithLink(s.url, m.left + 3, y, { url: s.url });
+          doc.setTextColor(0);
+          y += LH * 0.85 + 2;
+        });
+      }
     }
 
     // ── Footer auf jeder Seite ─────────────────────────────────────────────
