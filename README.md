@@ -86,7 +86,7 @@ Am Ende von M8 erscheint der Export-Screen mit zwei Optionen:
 - Abschnitte gefiltert nach `ki_eignung` (Alternativpfad bei `nein`)
 
 ### PDF
-- Generiert clientseitig via **jsPDF 2.5.1** (UMD, CDN)
+- Generiert clientseitig via **jsPDF 2.5.1** (UMD, lokal in `vendor/`)
 - A4, Helvetica (Latin-1 für Umlaute)
 - Abschnitte, Quellenangaben-Seite, Seitenzahlen im Footer
 
