@@ -406,6 +406,7 @@
 
       const hasLinks = Array.isArray(field.sources) && field.sources.length > 0;
       let tooltip = null;
+      let docClickHandler = null;
 
       function buildHtml() {
         let h = '';
@@ -436,6 +437,10 @@
       }
       function hideTip() {
         if (tooltip) { tooltip.remove(); tooltip = null; }
+        if (docClickHandler) {
+          document.removeEventListener('click', docClickHandler);
+          docClickHandler = null;
+        }
       }
 
       if (hasLinks) {
@@ -444,13 +449,12 @@
           e.preventDefault();
           if (tooltip) { hideTip(); return; }
           showTip();
-          const onDocClick = ev => {
+          docClickHandler = ev => {
             if (tooltip && !tooltip.contains(ev.target) && ev.target !== btn) {
               hideTip();
-              document.removeEventListener('click', onDocClick);
             }
           };
-          setTimeout(() => document.addEventListener('click', onDocClick), 0);
+          setTimeout(() => document.addEventListener('click', docClickHandler), 0);
         });
       } else {
         // Nur Text/Hilfe: Hover + Klick-Toggle

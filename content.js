@@ -1199,6 +1199,22 @@ NAVIGATOR.modules.push({
       output:{ label:"Halluzinationen bekannt", section:"prompting" }
     },
 
+    { id:"m6_bias", type:"select",
+      label:"Ist dir bewusst, dass KI-Ausgaben verzerrt oder diskriminierend sein können (Bias)?",
+      required:false,
+      help:"KI-Modelle lernen aus großen Datenmengen - und übernehmen dabei die Verzerrungen, die in diesen Daten stecken. Das kann dazu führen, dass bestimmte Personengruppen systematisch benachteiligt werden, etwa nach Geschlecht, Herkunft, Alter oder sozialem Status. In der Verwaltung ist das besonders heikel: Entscheidungen müssen diskriminierungsfrei und gleichbehandelnd sein. Prüfe, ob deine KI-Ausgaben bestimmte Gruppen anders behandeln - und sorge dafür, dass ein Mensch die Ergebnisse kontrolliert, bevor sie nach außen wirken.",
+      sources:[
+        { label:"BfDI – KI in Behörden. Datenschutz von Anfang an mitdenken (Dezember 2025)", url:"https://www.bfdi.bund.de/SharedDocs/Downloads/DE/Konsultationsverfahren/1_KI/Handreichung-KI-Behoerden.html" },
+        { label:"AI Act der Europäischen Union – Diskriminierungsfreiheit bei Hochrisiko-KI", url:"https://artificialintelligenceact.eu/de/" }
+      ],
+      options:[
+        { value:"ja_pruefe",   label:"Ja - ich achte aktiv auf Verzerrungen und prüfe Ausgaben" },
+        { value:"ja_unsicher", label:"Ich kenne das Risiko, bin aber unsicher beim Erkennen" },
+        { value:"kaum",        label:"Kaum - das ist ein neues Thema für mich" }
+      ],
+      output:{ label:"Bias-Risiko bekannt", section:"prompting" }
+    },
+
     { id:"m6_daten_in_prompts", type:"select",
       label:"Wie gehst du mit personenbezogenen oder behordseninternen Daten in Prompts um?",
       hint:"Daten, die in Prompts eingegeben werden, können beim Anbieter gespeichert oder für Training genutzt werden.",
@@ -1219,6 +1235,7 @@ NAVIGATOR.modules.push({
       required:false,
       options:[
         { value:"halluzinationen",    label:"Halluzinationen / falsche Fakten" },
+        { value:"bias",               label:"Verzerrte oder diskriminierende Ergebnisse (Bias)" },
         { value:"aktuelles_wissen",   label:"Veraltetes oder fehlendes Fachwissen" },
         { value:"sprache",            label:"Sprachliche Unschärfen oder Missverständnisse" },
         { value:"rechtliches",        label:"Ungenaue rechtliche Aussagen" },
@@ -1811,7 +1828,7 @@ NAVIGATOR.exportConfig = {
       includeInPdf: true,
       skipWhen: { stateKey:"ki_eignung", value:"nein" },
       fields: ["m6_erfahrung_prompting","m6_kontext","m6_rolle_vorgabe",
-               "m6_ausgabeformat","m6_iteration","m6_halluzinationen",
+               "m6_ausgabeformat","m6_iteration","m6_halluzinationen","m6_bias",
                "m6_daten_in_prompts","m6_grenzen","m6_beispiel_prompt",
                "m6_chatbot_systemprompt","m6_chatbot_eskalation",
                "m6_dokument_extraktion","m6_recherche_quellenkritik",
