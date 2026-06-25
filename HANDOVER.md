@@ -62,7 +62,7 @@ let onExportScreen = false;
 | `isFieldVisible(field)` | Prüft showWhen / showFor Bedingungen |
 | `showExportScreen()` | Export-UI mit Markdown-Preview und Download-Buttons |
 | `generateMarkdown()` | Erstellt Markdown-String für Export |
-| `generatePDF()` | Erstellt jsPDF-Dokument (jsPDF 2.5.1 via CDN) |
+| `generatePDF()` | Erstellt jsPDF-Dokument (jsPDF 2.5.1, lokal in `vendor/`) |
 | `saveToStorage()` / `loadFromStorage()` | localStorage unter Key `navigator_responses` |
 
 ---
@@ -121,7 +121,7 @@ skipWhen: { stateKey: "ki_eignung", value: "nein" }
 - Sections via `getExportSections()` gefiltert
 
 ### PDF (jsPDF 2.5.1)
-- CDN: `https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js`
+- Lokal: `vendor/jspdf.umd.min.js` (kein CDN — konsistent mit lokalen Fonts/Icons)
 - Format A4, Helvetica (Latin-1, unterstützt alle deutschen Umlaute)
 - Quellenangaben-Seite wenn `sourceNotesInFooter: true`
 - Checklist-Emojis → ASCII: `✅→[OK]`, `⚠️→[!]`, `❌→[ ]`
