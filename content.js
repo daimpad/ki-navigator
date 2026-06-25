@@ -795,7 +795,7 @@ NAVIGATOR.modules.push({
       hint:"Besondere Kategorien (Art. 9 DSGVO) erfordern erhöhten Schutz und in der Regel eine DSFA.",
       required:false,
       showWhen:{ field:"m5_pb_daten", values:["ja_direkt","ja_indirekt"] },
-      source:{ label:"DSGVO Art. 9; BfDI-Handreichung Kap. 3.1", text:"Besondere Kategorien duerfen nur in eng definierten Ausnahmen verarbeitet werden." },
+      source:{ label:"DSGVO Art. 9; BfDI-Handreichung Kap. 3.1", text:"Besondere Kategorien dürfen nur in eng definierten Ausnahmen verarbeitet werden." },
       options:[
         { value:"kontaktdaten",   label:"Kontaktdaten (Name, Adresse, E-Mail)" },
         { value:"fallbezogen",    label:"Fallbezogene Verwaltungsdaten (Aktenzeichen, Vorgang)" },
@@ -1328,7 +1328,7 @@ NAVIGATOR.modules.push({
       hint:"Die Antwort gibt einen ersten Hinweis auf die Tiefe des beabsichtigten Wandels.",
       required:false,
       options:[
-        { value:"prozessprob",      label:"Ein konkretes Prozessprobleml - etwas dauert zu lang, kostet zu viel, macht Fehler" },
+        { value:"prozessprob",      label:"Ein konkretes Prozessproblem - etwas dauert zu lang, kostet zu viel, macht Fehler" },
         { value:"ki_möglichkeit",  label:"Eine KI-Möglichkeit - ich habe ein Tool gesehen und gefragt: Wo können wir das einsetzen?" },
         { value:"strategie",        label:"Eine strategische Entscheidung - die Behörde will sich grundlegend verändern" },
         { value:"druck",            label:"Externer Druck - politischer Auftrag, Förderprogramm, Erwartung von aussen" },
@@ -1608,7 +1608,7 @@ NAVIGATOR.modules.push({
     // Checkliste - wizard.js wertet referenced_field aus und setzt Ampelstatus
     { id:"m8_checkliste", type:"checklist",
       label:"Arbeitsstand - Checkliste",
-      hint:"Ampelstatus wird aus deinen bisherigen Antworten abgeleitet. Du kannst Eintraege manuell korrigieren.",
+      hint:"Ampelstatus wird aus deinen bisherigen Antworten abgeleitet. Du kannst Einträge manuell korrigieren.",
       required:false,
       items:[
         {
@@ -1696,7 +1696,7 @@ NAVIGATOR.modules.push({
     // Reifegrad-Selbsteinstufung
     { id:"m8_reifegrad", type:"select",
       label:"Wo steht dein Use Case insgesamt?",
-      hint:"Eigene Einschätzung - unabhaengig vom Checklistenstatus.",
+      hint:"Eigene Einschätzung - unabhängig vom Checklistenstatus.",
       required:false,
       options:[
         { value:"idee",
@@ -1731,17 +1731,17 @@ NAVIGATOR.modules.push({
         { value:"technik",         label:"Technische Beratung (KI-Typ, Hosting, Integration)" },
         { value:"prompting",       label:"Prompting-Kompetenz aufbauen" },
         { value:"stakeholder",     label:"Stakeholder gewinnen oder einbinden" },
-        { value:"budget",          label:"Finanzierung / Foerdermittel" },
+        { value:"budget",          label:"Finanzierung / Fördermittel" },
         { value:"methodik",        label:"Methodik (Use-Case-Entwicklung, Pilotierung)" },
-        { value:"vernetzung",      label:"Austausch mit anderen Kommunen zu aehnlichen Use Cases" },
-        { value:"keiner",          label:"Kein Unterstützungsbedarf - ich kann eigenstaendig weitermachen" }
+        { value:"vernetzung",      label:"Austausch mit anderen Kommunen zu ähnlichen Use Cases" },
+        { value:"keiner",          label:"Kein Unterstützungsbedarf - ich kann eigenständig weitermachen" }
       ],
       output:{ label:"Unterstützungsbedarf", section:"selbstbewertung" }
     },
 
     { id:"m8_gesamtreflexion", type:"textarea",
       label:"Was hat dich in diesem Reflexionsprozess am meisten überrascht oder verändert?",
-      hint:"Optional - für den persoenlichen Steckbrief.",
+      hint:"Optional - für den persönlichen Steckbrief.",
       required:false,
       rows:4,
       output:{ label:"Persoenliche Gesamtreflexion", section:"selbstbewertung" }
