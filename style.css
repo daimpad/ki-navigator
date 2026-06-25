@@ -695,7 +695,7 @@ mark.g {
   transition: background 0.15s;
 }
 .import-drop-area.drag-over {
-  background: var(--nz-yellow);
+  background: var(--nz-green);
 }
 .import-drop-area .fa-solid {
   font-size: 28px;
@@ -712,7 +712,7 @@ mark.g {
 .dialog-box code {
   font-family: var(--nz-font-mono);
   font-size: 12px;
-  background: var(--nz-yellow);
+  background: var(--nz-green-soft);
   padding: 1px 4px;
 }
 
@@ -731,7 +731,7 @@ mark.g {
 }
 .export-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
 .btn-export { flex: 1; min-width: 180px; }
-.btn-share-large { border-color: var(--nz-yellow, #f5c400); box-shadow: 4px 4px 0 var(--nz-yellow, #f5c400); }
+.btn-share-large { border-color: var(--nz-green-strong); box-shadow: 4px 4px 0 var(--nz-green-strong); }
 
 .export-preview-box {
   border: 2px solid var(--nz-ink);
