@@ -1751,6 +1751,87 @@ NAVIGATOR.modules.push({
 });
 
 
+// ═══════════════════════════════════════════════════════════
+// MODUL Pitch & Stakeholder-Kommunikation
+//
+// Abschluss-Etappe: Aus dem durchdachten Use Case einen überzeugenden
+// Pitch für die relevanten Stakeholder entwickeln. Reine Textreflexion,
+// keine Scoring- oder Branching-Logik. ENTWURF — Inhalte werden mit dem
+// ausgearbeiteten Kapitel-4-Material abgeglichen.
+// ═══════════════════════════════════════════════════════════
+
+const PITCH_QUELLEN = [
+  { label: "KGSt – Stakeholder-Management in kommunalen Digitalisierungsvorhaben", url: "https://www.kgst.de" },
+  { label: "NACo AI County Compass (Juli 2024) – Stakeholder-Kommunikation in der kommunalen KI-Einführung", url: "https://www.naco.org" }
+];
+
+NAVIGATOR.modules.push({
+  id: "mpitch",
+  title: "Pitch & Stakeholder-Kommunikation",
+  skippable: true,
+  progressLabel: "Pitch",
+  fields: [
+
+    { id:"mpitch_intro", type:"info", content:[
+      "Du hast deinen Use Case durchdacht - jetzt geht es darum, Unterstützung dafür zu gewinnen.",
+      "Die folgenden Felder helfen dir, einen klaren Pitch für deine Stakeholder vorzubereiten. Sie bauen auf deinen bisherigen Angaben auf und fließen in den Steckbrief ein."
+    ]},
+
+    { id:"mpitch_kernbotschaft", type:"textarea",
+      label:"Was ist deine Kernbotschaft in ein bis zwei Sätzen?",
+      hint:"Der Kern deines Anliegens - so knapp, dass ihn jede:r sofort versteht.",
+      help:"Eine gute Kernbotschaft bringt Problem, Lösung und Nutzen in ein bis zwei Sätzen zusammen - ohne Fachjargon. Stell dir vor, du hast 30 Sekunden im Aufzug mit der Entscheiderin. Was muss hängen bleiben? Vermeide Technikdetails; sprich über den Mehrwert für Bürgerinnen, Beschäftigte oder die Verwaltung. Wenn du den Satz nicht frei sprechen kannst, ist er noch zu kompliziert.",
+      sources: PITCH_QUELLEN,
+      required:false, rows:3,
+      output:{ label:"Kernbotschaft", section:"pitch" }
+    },
+
+    { id:"mpitch_zielgruppe", type:"textarea",
+      label:"An wen richtet sich dein Pitch konkret - und was ist dieser Person wichtig?",
+      hint:"Knüpft an die Stakeholder an, die du in Modul 'Organisatorischer Kontext' benannt hast.",
+      help:"Ein Pitch funktioniert nur, wenn er auf die Zuhörenden zugeschnitten ist. Entscheider achten auf Kosten, Risiko und politische Wirkung; Datenschutz und Rechtsamt auf Rechtssicherheit; Beschäftigte auf Entlastung und Arbeitsplatzsicherheit; die Verwaltungsleitung auf den Beitrag zur Gesamtstrategie. Überlege pro Zielgruppe: Was ist ihr wichtigstes Anliegen - und wie zahlt dein Use Case darauf ein?",
+      sources: PITCH_QUELLEN,
+      required:false, rows:3,
+      output:{ label:"Zielgruppe des Pitches", section:"pitch" }
+    },
+
+    { id:"mpitch_nutzenargument", type:"textarea",
+      label:"Welcher konkrete Nutzen überzeugt genau diese Zielgruppe?",
+      hint:"Möglichst konkret und - wo möglich - belegbar.",
+      help:"Abstrakte Versprechen ('mehr Effizienz') überzeugen selten. Mach den Nutzen greifbar: Wie viel Zeit oder Geld wird gespart? Wie viele Anfragen werden schneller beantwortet? Welche Belastung fällt weg? Wenn du noch keine Zahlen hast, formuliere eine plausible Schätzung oder einen konkreten Vorher-Nachher-Vergleich. Konkretheit schafft Glaubwürdigkeit.",
+      required:false, rows:3,
+      output:{ label:"Nutzenargument", section:"pitch" }
+    },
+
+    { id:"mpitch_einwaende", type:"textarea",
+      label:"Welche Einwände oder Sorgen erwartest du - und wie begegnest du ihnen?",
+      hint:"Wer Einwände vorwegnimmt, wirkt souverän und vorbereitet.",
+      help:"Typische Einwände bei kommunalen KI-Vorhaben: Datenschutz ('Was passiert mit den Daten?'), Personalsorge ('Wird mein Job ersetzt?'), Kosten ('Was kostet das laufend?'), Verlässlichkeit ('Was, wenn die KI Fehler macht?'). Notiere zu jedem erwarteten Einwand eine ehrliche, belastbare Antwort. Souverän ist nicht, wer keine Risiken hat - sondern wer sie benennt und zeigt, wie er damit umgeht.",
+      sources: PITCH_QUELLEN,
+      required:false, rows:4,
+      output:{ label:"Erwartete Einwände & Antworten", section:"pitch" }
+    },
+
+    { id:"mpitch_ask", type:"textarea",
+      label:"Was ist dein konkreter Ask - was soll am Ende des Gesprächs passieren?",
+      hint:"Ein Pitch ohne klare Bitte verpufft.",
+      help:"Jeder Pitch braucht einen konkreten nächsten Schritt, um den du bittest: eine Freigabe, ein kleines Budget für einen Test, die Benennung einer Ansprechperson, die Zustimmung zu einem Pilotprojekt. Formuliere den Ask so, dass dein Gegenüber mit einem einfachen Ja antworten kann. Je kleiner und konkreter die erste Bitte, desto wahrscheinlicher die Zustimmung.",
+      required:false, rows:3,
+      output:{ label:"Konkreter Ask", section:"pitch" }
+    },
+
+    { id:"mpitch_naechster_schritt", type:"textarea",
+      label:"Was ist der nächste konkrete Schritt nach dem Pitch?",
+      hint:"Was tust du unabhängig vom Ausgang des Gesprächs als Nächstes?",
+      help:"Halte fest, was nach dem Pitch passiert - mit klarem Verantwortlichen und Zeitpunkt. Das kann eine Nachbereitung sein, ein Folgetermin, das Einholen einer fehlenden Information oder die Vorbereitung eines Pilotprojekts. Ein notierter nächster Schritt sorgt dafür, dass der Schwung nicht verloren geht.",
+      required:false, rows:3,
+      output:{ label:"Nächster Schritt nach dem Pitch", section:"pitch" }
+    }
+
+  ]
+});
+
+
 // MODUL 9 — Export-Konfiguration
 // Kein nutzerorientiertes Modul - definiert Struktur und Templates
 // für den Export (Markdown + PDF).
@@ -1860,6 +1941,14 @@ NAVIGATOR.exportConfig = {
       includeInPdf: true,
       fields: ["m8_checkliste","m8_reifegrad","m8_offene_punkte",
                "m8_unterstützungsbedarf","m8_gesamtreflexion"]
+    },
+    {
+      id: "pitch",
+      title: "Pitch & Stakeholder-Kommunikation",
+      icon: "megaphone",
+      includeInPdf: true,
+      fields: ["mpitch_kernbotschaft","mpitch_zielgruppe","mpitch_nutzenargument",
+               "mpitch_einwaende","mpitch_ask","mpitch_naechster_schritt"]
     }
   ],
 
