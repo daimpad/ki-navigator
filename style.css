@@ -824,6 +824,26 @@ mark.g {
 }
 
 /* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  /* Stack footer: links row on top, buttons row below */
+  .nav-footer { padding: 8px 12px; }
+  .nav-inner {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  /* Links take full width as their own row (order: first) */
+  .site-footer-links {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+  /* Buttons share the second row */
+  #btn-back  { order: 0; }
+  #btn-skip  { order: 1; }
+  #btn-next  { order: 2; }
+}
+
 @media (max-width: 479px) {
   .app-title     { font-size: 18px; }
   .module-title  { font-size: 26px; }
