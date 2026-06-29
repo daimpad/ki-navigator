@@ -672,6 +672,10 @@
           id: makeStakeholderId(), name: '', role: '', category: '',
           influence: '', attitude: ''
         });
+        // Manuelles Hinzufügen zählt als "Übernahme-Entscheidung getroffen",
+        // damit der Übernahme-Hinweis nach Löschen aller Einträge nicht erneut
+        // erscheint.
+        data.importedFromM3 = true;
         persist(); render();
       });
 

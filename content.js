@@ -504,7 +504,7 @@ NAVIGATOR.modules.push({
     { id: "mstake_intro", type: "info", content: [
       "Du hast im Modul „Organisatorischer Kontext“ erste Beteiligte benannt. Hier gehst du einen Schritt weiter: Du erfasst deine Stakeholder konkret und ordnest sie nach Einfluss und Haltung in eine Matrix ein.",
       "Schritt 1: Erfasse die relevanten Personen oder Rollen mit Name/Kürzel, Funktion und Kategorie (Entscheider:in, Bewerter:in, Multiplikator:in, Betroffene:r).",
-      "Schritt 2: Lege pro Stakeholder Einfluss (gering/hoch) und Haltung (unterstützend/skeptisch) fest. Daraus ergibt sich automatisch ein Quadrant mit einem Hinweis zur Adressierung."
+      "Schritt 2: Lege pro Stakeholder Einfluss (gering oder hoch) und Haltung (unterstützend/fördernd oder skeptisch/resistent) fest. Daraus ergibt sich automatisch ein Quadrant mit einem Hinweis zur Adressierung."
     ]},
 
     { id: "mstake_matrix", type: "stakeholderMatrix" }
@@ -821,7 +821,7 @@ NAVIGATOR.modules.push({
       options:[
         { value:"ja_direkt",   label:"Ja - direkt personenbezogen (Name, Adresse, Fallnummer)" },
         { value:"ja_indirekt", label:"Ja - indirekt personenbezogen (Pseudonyme, Kombinationen)" },
-        { value:"nein",        label:"Nein - ausschliesslich anonyme oder aggregierte Daten" },
+        { value:"nein",        label:"Nein - ausschließlich anonyme oder aggregierte Daten" },
         { value:"unklar",      label:"Noch nicht geprüft" }
       ],
       output:{ label:"Personenbezogene Daten verarbeitet", section:"datenschutz" }
@@ -871,7 +871,7 @@ NAVIGATOR.modules.push({
         { value:"ja_erforderlich", label:"Ja - DSFA ist erforderlich und läuft oder ist abgeschlossen" },
         { value:"ja_nicht_erf",    label:"Ja geprüft - DSFA nicht erforderlich (mit Begründung)" },
         { value:"noch_nicht",      label:"Noch nicht geprüft" },
-        { value:"unbekannt",       label:"Ich weiss nicht, was eine DSFA ist" }
+        { value:"unbekannt",       label:"Ich weiß nicht, was eine DSFA ist" }
       ],
       output:{ label:"DSFA geprüft", section:"datenschutz" }
     },
@@ -882,7 +882,7 @@ NAVIGATOR.modules.push({
       required:false,
       source:{ label:"DSK-Blacklist; BfDI-Handreichung Kap. 4.2", text:"Die Datenschutzkonferenz (DSK) hat Listen veröffentlicht, welche Verarbeitungsarten eine DSFA zwingend erfordern. KI-gestützte Entscheidungen mit Rechtswirkung sind regelmäßig enthalten." },
       options:[
-        { value:"systematisch",     label:"Systematische Verarbeitung auf grosser Skala" },
+        { value:"systematisch",     label:"Systematische Verarbeitung auf großer Skala" },
         { value:"profiling",        label:"Profiling oder automatisierte Entscheidungen mit Rechtswirkung" },
         { value:"besondere_kat",    label:"Besondere Kategorien (Art. 9 DSGVO)" },
         { value:"schutzbeduerfte",  label:"Verarbeitung schutzbedürftiger Personen (Minderjährige, Sozialhilfe)" },
@@ -1742,7 +1742,7 @@ NAVIGATOR.modules.push({
         },
         { value:"klaerung",
           label:"In Klärung - konkrete Vorstellung, wichtige Fragen werden gerade bearbeitet",
-          description:"Ich weiss, was ich will. Datenschutz, Technik oder Organisation sind noch in Abstimmung."
+          description:"Ich weiß, was ich will. Datenschutz, Technik oder Organisation sind noch in Abstimmung."
         },
         { value:"umsetzungsreif",
           label:"Umsetzungsreif - wesentliche Fragen geklärt, Umsetzung kann beginnen",
