@@ -476,6 +476,43 @@ const NAVIGATOR = {
 if (typeof module !== "undefined") module.exports = NAVIGATOR;
 
 // ═══════════════════════════════════════════════════════════
+// MODUL Stakeholder-Adressierung
+//
+// Position: direkt NACH m3 (Organisatorischer Kontext), da dort über
+// das Feld m3_entscheider die Beteiligten erstmals benannt werden.
+// Methodisch bildet dieses Modul die Stakeholder-Arbeit aus Session 4
+// der KI-Werkstatt I ab (Erfassung + 2x2-Einfluss/Haltung-Matrix).
+//
+// Datenmodell: NICHT in responses[], sondern in state.stakeholderMatrix
+//   { stakeholders: [{ id, name, role, category, influence, attitude }],
+//     importedFromM3: bool }
+// Dadurch wird es über die bestehende state-Serialisierung automatisch in
+// localStorage UND im URL-Share mitgeführt — ohne die Feld-Logik zu berühren.
+// Das Custom-Feld type:"stakeholderMatrix" wird in wizard.js gerendert.
+//
+// Da dieses Modul an Index 3 eingefügt wird (vor dem m4-Push unten), stehen
+// zu diesem Zeitpunkt erst m1–m3 in NAVIGATOR.modules.
+// ═══════════════════════════════════════════════════════════
+
+NAVIGATOR.modules.push({
+  id: "mstake",
+  title: "Stakeholder-Adressierung",
+  skippable: true,
+  progressLabel: "Stakeholder",
+  fields: [
+
+    { id: "mstake_intro", type: "info", content: [
+      "Du hast im Modul „Organisatorischer Kontext“ erste Beteiligte benannt. Hier gehst du einen Schritt weiter: Du erfasst deine Stakeholder konkret und ordnest sie nach Einfluss und Haltung in eine Matrix ein.",
+      "Schritt 1: Erfasse die relevanten Personen oder Rollen mit Name/Kürzel, Funktion und Kategorie (Entscheider:in, Bewerter:in, Multiplikator:in, Betroffene:r).",
+      "Schritt 2: Lege pro Stakeholder Einfluss (gering/hoch) und Haltung (unterstützend/skeptisch) fest. Daraus ergibt sich automatisch ein Quadrant mit einem Hinweis zur Adressierung."
+    ]},
+
+    { id: "mstake_matrix", type: "stakeholderMatrix" }
+
+  ]
+});
+
+// ═══════════════════════════════════════════════════════════
 // MODUL 4 — KI-Eignung & Technologieauswahl
 //
 // Struktur:

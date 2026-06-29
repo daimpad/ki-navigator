@@ -172,6 +172,7 @@
       case 'multiselect': renderMultiselect(wrap, field); break;
       case 'scale':       renderScale(wrap, field);       break;
       case 'checklist':   renderChecklist(wrap, field);   break;
+      case 'stakeholderMatrix': renderStakeholderMatrix(wrap, field); break;
       default: return null;
     }
 
@@ -396,6 +397,333 @@
     return 'red';
   }
 
+  // ── Stakeholder-Adressierung (Custom-Feldtyp) ──────────────────────────────
+  //
+  //  Daten leben in state.stakeholderMatrix (NICHT in responses), damit sie
+  //  über die bestehende state-Serialisierung automatisch in localStorage und
+  //  im URL-Share mitgeführt werden. Alte Stände ohne den Schlüssel werden
+  //  beim ersten Zugriff leer initialisiert — kein Fehler, kein Fallback-Dialog.
+
+  const STAKEHOLDER_CATEGORIES = [
+    { value: 'entscheider',   label: 'Entscheider:in' },
+    { value: 'bewerter',      label: 'Bewerter:in' },
+    { value: 'multiplikator', label: 'Multiplikator:in' },
+    { value: 'betroffene',    label: 'Betroffene:r' }
+  ];
+  const STAKEHOLDER_INFLUENCE = [
+    { value: 'gering', label: 'Gering' },
+    { value: 'hoch',   label: 'Hoch' }
+  ];
+  const STAKEHOLDER_ATTITUDE = [
+    { value: 'unterstuetzend', label: 'Unterstützend/Fördernd' },
+    { value: 'skeptisch',      label: 'Skeptisch/Resistent' }
+  ];
+  // influence|attitude → Quadrant-Schlüssel (identisch zu stakeholder-hints.js)
+  const STAKEHOLDER_QUADRANTS = {
+    'gering|unterstuetzend': 'potenzielle-unterstuetzer',
+    'hoch|unterstuetzend':   'strategische-partner',
+    'gering|skeptisch':      'marginal-beteiligte',
+    'hoch|skeptisch':        'kritische-vetospieler'
+  };
+  const STAKEHOLDER_QUADRANT_TITLES = {
+    'strategische-partner':     'Strategische Partner',
+    'potenzielle-unterstuetzer':'Potenzielle Unterstützer',
+    'kritische-vetospieler':    'Kritische Vetospieler',
+    'marginal-beteiligte':      'Marginal Beteiligte'
+  };
+  // Lesefolge im 2×2-Raster: oben-links, oben-rechts, unten-links, unten-rechts
+  const STAKEHOLDER_MATRIX_ORDER = [
+    'potenzielle-unterstuetzer', 'strategische-partner',
+    'marginal-beteiligte',       'kritische-vetospieler'
+  ];
+
+  let stakeholderIdCounter = 0;
+  function makeStakeholderId() {
+    stakeholderIdCounter += 1;
+    return 's' + Date.now().toString(36) + '_' + stakeholderIdCounter;
+  }
+
+  function getStakeholderMatrix() {
+    if (!state.stakeholderMatrix || typeof state.stakeholderMatrix !== 'object') {
+      state.stakeholderMatrix = { stakeholders: [], importedFromM3: false };
+    }
+    if (!Array.isArray(state.stakeholderMatrix.stakeholders)) {
+      state.stakeholderMatrix.stakeholders = [];
+    }
+    return state.stakeholderMatrix;
+  }
+
+  function stakeholderHasData() {
+    return getStakeholderMatrix().stakeholders.length > 0;
+  }
+
+  function stakeholderQuadrant(s) {
+    if (!s || !s.influence || !s.attitude) return null;
+    return STAKEHOLDER_QUADRANTS[s.influence + '|' + s.attitude] || null;
+  }
+
+  function stakeholderCategoryLabel(value) {
+    const c = STAKEHOLDER_CATEGORIES.find(x => x.value === value);
+    return c ? c.label : '';
+  }
+
+  // Einzeilige Klartext-Darstellung für Markdown/PDF-Export
+  function stakeholderLine(s) {
+    const name  = (s.name && s.name.trim()) ? s.name.trim() : '(ohne Name)';
+    const parts = [name];
+    if (s.role && s.role.trim()) parts.push(s.role.trim());
+    let line = parts.join(' — ');
+    const cat = stakeholderCategoryLabel(s.category);
+    if (cat) line += ` (${cat})`;
+    return line;
+  }
+
+  function generateStakeholderMarkdown() {
+    if (!stakeholderHasData()) return '';
+    const sep  = NAVIGATOR.exportConfig.markdown.sectionSeparator;
+    const data = getStakeholderMatrix();
+    let md = `## Stakeholder-Adressierung\n\n`;
+    STAKEHOLDER_MATRIX_ORDER.forEach(quadKey => {
+      const members = data.stakeholders.filter(s => stakeholderQuadrant(s) === quadKey);
+      if (members.length === 0) return;
+      md += `**${STAKEHOLDER_QUADRANT_TITLES[quadKey]}**\n\n`;
+      members.forEach(s => { md += `- ${stakeholderLine(s)}\n`; });
+      md += `\n`;
+    });
+    const unpos = data.stakeholders.filter(s => !stakeholderQuadrant(s));
+    if (unpos.length > 0) {
+      md += `**Noch nicht positioniert**\n\n`;
+      unpos.forEach(s => { md += `- ${stakeholderLine(s)}\n`; });
+      md += `\n`;
+    }
+    md += `${sep}\n\n`;
+    return md;
+  }
+
+  function renderStakeholderMatrix(wrap, field) {
+    const data = getStakeholderMatrix();
+
+    function persist() { saveToStorage(); }
+
+    function optionTags(list, selected, emptyLabel) {
+      let h = `<option value=""${selected ? '' : ' selected'}>${escapeHtml(emptyLabel)}</option>`;
+      list.forEach(o => {
+        h += `<option value="${escapeHtml(o.value)}"${selected === o.value ? ' selected' : ''}>${escapeHtml(o.label)}</option>`;
+      });
+      return h;
+    }
+
+    // Einmaliger Übernahme-Hinweis aus m3_entscheider (strukturierte
+    // Mehrfachauswahl — daher kein fragiles Freitext-Splitting nötig).
+    function buildImportNote() {
+      if (data.stakeholders.length > 0 || data.importedFromM3) return '';
+      const sel = responses['m3_entscheider'];
+      if (!Array.isArray(sel) || sel.length === 0) return '';
+      return `<div class="sth-import-note" data-role="import-note">
+        <p>Im Modul „Organisatorischer Kontext“ hast du bereits ${sel.length} Beteiligte benannt. Möchtest du sie als Stakeholder übernehmen? Die Kategorie ordnest du anschließend selbst zu.</p>
+        <div class="sth-import-actions">
+          <button type="button" class="btn btn-secondary btn-sm" data-action="import-m3">Aus Modul übernehmen</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="import-skip">Neu beginnen</button>
+        </div>
+      </div>`;
+    }
+
+    function buildCaptureRows() {
+      if (data.stakeholders.length === 0) {
+        return `<p class="sth-empty">Noch keine Stakeholder erfasst.</p>`;
+      }
+      let h = `<div class="sth-table" role="list">`;
+      data.stakeholders.forEach(s => {
+        h += `<div class="sth-row" role="listitem" data-sid="${escapeHtml(s.id)}">
+          <input type="text" class="sth-input sth-name" data-fieldkey="name" maxlength="60"
+            placeholder="Name/Kürzel (Pflichtfeld)" value="${escapeHtml(s.name || '')}"
+            aria-label="Name oder Kürzel">
+          <input type="text" class="sth-input sth-role" data-fieldkey="role" maxlength="120"
+            placeholder="Rolle/Funktion (optional)" value="${escapeHtml(s.role || '')}"
+            aria-label="Rolle oder Funktion">
+          <select class="sth-select sth-cat" data-fieldkey="category" aria-label="Kategorie">
+            ${optionTags(STAKEHOLDER_CATEGORIES, s.category, 'Kategorie …')}
+          </select>
+          <button type="button" class="sth-del" data-action="delete" aria-label="Stakeholder entfernen" title="Entfernen">✕</button>
+        </div>`;
+      });
+      h += `</div>`;
+      return h;
+    }
+
+    function buildPositioning() {
+      if (data.stakeholders.length === 0) return '';
+      let h = `<div class="sth-section">
+        <h3 class="sth-step-title">Schritt 2 · Positionierung</h3>
+        <p class="sth-step-desc">Lege pro Stakeholder Einfluss und Haltung fest. Einträge ohne vollständige Angabe erscheinen unter „Noch nicht positioniert“.</p>
+        <div class="sth-table" role="list">`;
+      data.stakeholders.forEach(s => {
+        const name = (s.name && s.name.trim()) ? s.name : '(ohne Name)';
+        h += `<div class="sth-posrow" role="listitem" data-sid="${escapeHtml(s.id)}">
+          <span class="sth-posname">${escapeHtml(name)}</span>
+          <select class="sth-select" data-fieldkey="influence" aria-label="Einfluss von ${escapeHtml(name)}">
+            ${optionTags(STAKEHOLDER_INFLUENCE, s.influence, 'Einfluss …')}
+          </select>
+          <select class="sth-select" data-fieldkey="attitude" aria-label="Haltung von ${escapeHtml(name)}">
+            ${optionTags(STAKEHOLDER_ATTITUDE, s.attitude, 'Haltung …')}
+          </select>
+        </div>`;
+      });
+      h += `</div></div>`;
+      return h;
+    }
+
+    function buildChips(quadKey, unpositioned) {
+      const members = unpositioned
+        ? data.stakeholders.filter(s => !stakeholderQuadrant(s))
+        : data.stakeholders.filter(s => stakeholderQuadrant(s) === quadKey);
+      if (members.length === 0) return unpositioned ? '' : `<p class="sth-quadrant-empty">—</p>`;
+      return members.map(s => {
+        const name = (s.name && s.name.trim()) ? s.name : '(ohne Name)';
+        const cat  = stakeholderCategoryLabel(s.category);
+        const cls  = 'sth-chip' + (unpositioned ? ' sth-chip-unpos' : '');
+        return `<span class="${cls}" title="${escapeHtml(s.role || '')}">${escapeHtml(name)}${cat ? `<span class="sth-chip-cat">${escapeHtml(cat)}</span>` : ''}</span>`;
+      }).join('');
+    }
+
+    function buildMatrix() {
+      if (data.stakeholders.length === 0) return '';
+      let cells = '';
+      STAKEHOLDER_MATRIX_ORDER.forEach(quadKey => {
+        cells += `<div class="sth-quadrant sth-q-${quadKey}">
+          <span class="sth-quadrant-title">${escapeHtml(STAKEHOLDER_QUADRANT_TITLES[quadKey])}</span>
+          <div class="sth-chips">${buildChips(quadKey, false)}</div>
+        </div>`;
+      });
+      let h = `<div class="sth-section">
+        <h3 class="sth-step-title">Einfluss-Haltungs-Matrix</h3>
+        <div class="sth-matrix-frame">
+          <div class="sth-axis-y sth-axis-y-top">Unterstützend / Fördernd</div>
+          <div class="sth-matrix-grid">${cells}</div>
+          <div class="sth-axis-y sth-axis-y-bottom">Skeptisch / Resistent</div>
+          <div class="sth-axis-x"><span>Geringer Einfluss</span><span>Hoher Einfluss</span></div>
+        </div>`;
+      const unposHtml = buildChips(null, true);
+      if (unposHtml) {
+        h += `<div class="sth-unpositioned">
+          <h4>Noch nicht positioniert</h4>
+          <div class="sth-chips">${unposHtml}</div>
+        </div>`;
+      }
+      h += `</div>`;
+      return h;
+    }
+
+    function buildHints() {
+      if (data.stakeholders.length === 0) return '';
+      const H = (typeof window !== 'undefined' && window.STAKEHOLDER_HINTS) ? window.STAKEHOLDER_HINTS : null;
+      if (!H) return '';
+      let h = `<div class="sth-section sth-hints">
+        <h3 class="sth-step-title">Adressierungs-Hinweise</h3>`;
+      if (H.general) h += `<p class="sth-hint-general">${escapeHtml(H.general)}</p>`;
+      h += `<div class="sth-hint-grid">`;
+      STAKEHOLDER_MATRIX_ORDER.forEach(quadKey => {
+        const hint = H[quadKey];
+        if (!hint) return;
+        h += `<div class="sth-hint sth-hint-${quadKey}">
+          <h4 class="sth-hint-title">${escapeHtml(hint.title || STAKEHOLDER_QUADRANT_TITLES[quadKey])}</h4>`;
+        if (hint.axes) h += `<p class="sth-hint-axes">${escapeHtml(hint.axes)}</p>`;
+        (hint.body || []).forEach(p => { h += `<p>${escapeHtml(p)}</p>`; });
+        if (hint.pitfall) h += `<p class="sth-hint-pitfall"><strong>Was hier am häufigsten schiefläuft:</strong> ${escapeHtml(hint.pitfall)}</p>`;
+        h += `</div>`;
+      });
+      h += `</div></div>`;
+      return h;
+    }
+
+    function findStakeholder(sid) {
+      return data.stakeholders.find(s => s.id === sid);
+    }
+
+    function wire() {
+      const noteEl = wrap.querySelector('[data-role="import-note"]');
+      if (noteEl) {
+        const impBtn  = noteEl.querySelector('[data-action="import-m3"]');
+        const skipBtn = noteEl.querySelector('[data-action="import-skip"]');
+        if (impBtn) impBtn.addEventListener('click', () => {
+          const sel  = responses['m3_entscheider'];
+          const def  = getFieldDef('m3_entscheider');
+          const opts = (def && def.options) || [];
+          (Array.isArray(sel) ? sel : []).forEach(v => {
+            const opt   = opts.find(o => o.value === v);
+            const label = opt ? opt.label.replace('[kritisch]', '').trim() : String(v);
+            data.stakeholders.push({
+              id: makeStakeholderId(), name: label.slice(0, 60),
+              role: '', category: '', influence: '', attitude: ''
+            });
+          });
+          data.importedFromM3 = true;
+          persist(); render();
+        });
+        if (skipBtn) skipBtn.addEventListener('click', () => {
+          data.importedFromM3 = true;
+          persist(); render();
+        });
+      }
+
+      const addBtn = wrap.querySelector('.sth-add');
+      if (addBtn) addBtn.addEventListener('click', () => {
+        data.stakeholders.push({
+          id: makeStakeholderId(), name: '', role: '', category: '',
+          influence: '', attitude: ''
+        });
+        persist(); render();
+      });
+
+      wrap.querySelectorAll('.sth-row').forEach(row => {
+        const sid = row.dataset.sid;
+        const s   = findStakeholder(sid);
+        if (!s) return;
+        // Textfelder: live in den State schreiben OHNE Re-Render (Fokus bleibt);
+        // erst beim Verlassen (change) Matrix & Schritt 2 neu zeichnen.
+        row.querySelectorAll('.sth-input').forEach(inp => {
+          const key = inp.dataset.fieldkey;
+          inp.addEventListener('input',  () => { s[key] = inp.value; persist(); });
+          inp.addEventListener('change', () => { s[key] = inp.value; persist(); render(); });
+        });
+        const cat = row.querySelector('.sth-cat');
+        if (cat) cat.addEventListener('change', () => { s.category = cat.value; persist(); render(); });
+        const del = row.querySelector('[data-action="delete"]');
+        if (del) del.addEventListener('click', () => {
+          data.stakeholders = data.stakeholders.filter(x => x.id !== sid);
+          persist(); render();
+        });
+      });
+
+      wrap.querySelectorAll('.sth-posrow').forEach(row => {
+        const sid = row.dataset.sid;
+        const s   = findStakeholder(sid);
+        if (!s) return;
+        row.querySelectorAll('.sth-select').forEach(sel => {
+          const key = sel.dataset.fieldkey;
+          sel.addEventListener('change', () => { s[key] = sel.value; persist(); render(); });
+        });
+      });
+    }
+
+    function render() {
+      wrap.innerHTML =
+        buildImportNote() +
+        `<div class="sth-section">
+          <h3 class="sth-step-title">Schritt 1 · Stakeholder erfassen</h3>
+          <p class="sth-step-desc">Erfasse die relevanten Personen oder Rollen. Name/Kürzel ist Pflicht; Rolle und Kategorie sind optional. Beliebig viele Einträge, Reihenfolge nach Eingabe.</p>` +
+          buildCaptureRows() +
+          `<button type="button" class="btn btn-secondary sth-add" data-action="add">+ Stakeholder hinzufügen</button>
+        </div>` +
+        buildPositioning() +
+        buildMatrix() +
+        buildHints();
+      wire();
+    }
+
+    render();
+  }
+
   // ── Quellenangaben-Tooltip ─────────────────────────────────────────────────
 
   function attachSourceButtons(wrap) {
@@ -561,6 +889,7 @@
       f.type !== 'info' && f.type !== 'checklist' && isFieldVisible(f)
     );
     const filled = inputFields.filter(f => {
+      if (f.type === 'stakeholderMatrix') return stakeholderHasData();
       const val = responses[f.id];
       if (val === undefined || val === null || val === '') return false;
       if (Array.isArray(val) && val.length === 0) return false;
@@ -776,6 +1105,8 @@
       if (!hasContent) md += `*(keine Angaben)*\n\n`;
       md += `${sep}\n\n`;
     });
+
+    md += generateStakeholderMarkdown();
 
     const links = collectSourceLinks();
     if (links.length > 0) {
@@ -1016,6 +1347,49 @@
         y += LH * 0.5;
       });
     });
+
+    // ── Stakeholder-Adressierung (eigener Abschnitt am Ende) ────────────────
+    if (stakeholderHasData()) {
+      const sdata = getStakeholderMatrix();
+      newPage();
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.setTextColor(15, 76, 129);
+      pdfText('Stakeholder-Adressierung', m.left, y);
+      y += LH * 1.4;
+      doc.setDrawColor(15, 76, 129);
+      doc.setLineWidth(0.4);
+      doc.line(m.left, y, pw - m.right, y);
+      y += LH * 0.9;
+      doc.setDrawColor(0);
+      doc.setTextColor(0);
+
+      const writeGroup = (title, members) => {
+        if (members.length === 0) return;
+        checkY(LH * 3);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        const tLines = doc.splitTextToSize(title, cw);
+        pdfText(tLines, m.left, y);
+        y += tLines.length * LH * 0.95;
+        doc.setFont('helvetica', 'normal');
+        members.forEach(s => {
+          const lines = doc.splitTextToSize('• ' + stakeholderLine(s), cw - 3);
+          checkY(lines.length * LH * 0.9);
+          pdfText(lines, m.left + 3, y);
+          y += lines.length * LH * 0.9;
+        });
+        y += LH * 0.5;
+      };
+
+      STAKEHOLDER_MATRIX_ORDER.forEach(quadKey => {
+        writeGroup(STAKEHOLDER_QUADRANT_TITLES[quadKey],
+          sdata.stakeholders.filter(s => stakeholderQuadrant(s) === quadKey));
+      });
+      writeGroup('Noch nicht positioniert',
+        sdata.stakeholders.filter(s => !stakeholderQuadrant(s)));
+    }
 
     // ── Quellenangaben-Seite ───────────────────────────────────────────────
     const sourceLinks = collectSourceLinks();
