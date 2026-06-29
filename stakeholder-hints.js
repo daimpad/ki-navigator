@@ -28,8 +28,8 @@ const STAKEHOLDER_HINTS = {
     title: "Strategische Partner",
     axes: "hoher Einfluss · unterstützend/fördernd",
     body: [
-      "Diese Personen können das Vorhaben aktiv tragen – und sie wollen es. Das ist die wertvollste Position in der Matrix, aber auch die am häufigsten unterschätzte. Strategische Partner sind keine Selbstläufer: Ihre Unterstützung wird mit der Zeit schwächer, wenn das Vorhaben für sie unsichtbar bleibt.",
-      "Hilfreich ist eine frühzeitige, persönliche Einbindung – nicht per Rundmail, sondern im direkten Gespräch. Halten Sie diese Personen über Fortschritte und Hindernisse auf dem Laufenden, auch wenn es nichts Spektakuläres zu berichten gibt. Sichtbarmachen lohnt sich: Wer das Vorhaben mitträgt, sollte das auch nach außen tun können. Geben Sie Anlässe dafür."
+      "Diese Personen können das Vorhaben aktiv tragen – und sie wollen es. Das ist die wertvollste Position in der Matrix, aber auch die am häufigsten unterschätzte. Strategische Partner sind keine Selbstläufer: ihre Unterstützung wird mit der Zeit schwächer, wenn das Vorhaben für sie unsichtbar bleibt.",
+      "Hilfreich ist eine frühzeitige, persönliche Einbindung – nicht per Rundmail, sondern im direkten Gespräch. Halte diese Personen über Fortschritte und Hindernisse auf dem Laufenden, auch wenn es nichts Spektakuläres zu berichten gibt. Sichtbarmachen lohnt sich: Wer das Vorhaben mitträgt, sollte das auch nach außen tun können. Gib Anlässe dafür."
     ],
     pitfall: "Strategische Partner werden für selbstverständlich genommen und erst dann angesprochen, wenn etwas hakt. Dann ist die Unterstützung oft schon abgewandert."
   },
@@ -50,7 +50,7 @@ const STAKEHOLDER_HINTS = {
     body: [
       "Diese Personen können das Vorhaben blockieren – und sie haben Vorbehalte. Die natürliche Reaktion ist, sie zu meiden. Das ist meist die schlechteste Strategie: Wenn sie zum ersten Mal vom Vorhaben hören, wenn es schon weit fortgeschritten ist, wird ihre Skepsis zu Widerstand.",
       "Hilfreich ist, früh den direkten Kontakt zu suchen – nicht um zu überzeugen, sondern um die Vorbehalte zu verstehen. Oft stehen hinter Skepsis konkrete fachliche Punkte, die das Vorhaben tatsächlich verbessern können (etwa bei Datenschutz, Personalrat, Rechnungsprüfung). Wer diese Punkte aufnimmt und das Vorhaben entsprechend anpasst, gewinnt nicht nur die kritische Person, sondern auch ein robusteres Konzept.",
-      "Wichtig ist die Sprachebene: Diese Personen erwarten fachliche Auseinandersetzung, keine PR. Vermeiden Sie Schlagworte und Allgemeinplätze, beantworten Sie konkrete Fragen konkret. Wenn ein Punkt nicht beantwortbar ist, sagen Sie es – das wirkt stärker als jede Beschwichtigung."
+      "Wichtig ist die Sprachebene: Diese Personen erwarten fachliche Auseinandersetzung, keine PR. Vermeide Schlagworte und Allgemeinplätze, beantworte konkrete Fragen konkret. Wenn ein Punkt nicht beantwortbar ist, sag es – das wirkt stärker als jede Beschwichtigung."
     ],
     pitfall: "Die Auseinandersetzung wird verzögert, bis sie sich nicht mehr vermeiden lässt. Zu diesem Zeitpunkt ist meist eine Position bezogen, von der sich schwer zurücktreten lässt."
   },
@@ -61,7 +61,7 @@ const STAKEHOLDER_HINTS = {
     body: [
       "Diese Personen stehen dem Vorhaben distanziert oder ablehnend gegenüber, haben aber wenig Einfluss auf seinen Verlauf. Es ist verlockend, sie zu ignorieren. Das ist meist vertretbar – aber nicht immer.",
       "Hilfreich ist eine knappe Beobachtungslogik: Hat sich an der Position dieser Personen etwas verändert? Sind aus marginal Beteiligten in den letzten Monaten Vetospieler geworden – etwa durch organisatorische Veränderungen, durch Rollenwechsel, durch das Aufgreifen ihrer Themen durch andere? Eine periodische Überprüfung – einmal im Quartal genügt – hält die Stakeholder-Map aktuell.",
-      "In der laufenden Arbeit reicht es meist, diese Personen über die allgemeinen Kanäle zu informieren, ohne gezielte Adressierung. Investieren Sie Ihre Zeit dort, wo sie höhere Wirkung hat."
+      "In der laufenden Arbeit reicht es meist, diese Personen über die allgemeinen Kanäle zu informieren, ohne gezielte Adressierung. Investiere deine Zeit dort, wo sie höhere Wirkung hat."
     ],
     pitfall: "Die Position wird statisch behandelt. Stakeholder-Konstellationen sind aber dynamisch, besonders in der Verwaltung mit ihrer Rotation und ihren Zuständigkeitswechseln."
   },
